@@ -6,12 +6,9 @@
 import json
 import os
 import random
-import sys
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import transaction
 from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -20,11 +17,11 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 import requests
+
 from .serializers import UserSerializer, PhoneNumberVerificationSerializer, CheckUniqueIDSerializer, \
     SocialAuthTokenSerializer, UserInfoSerializer
 
 User = get_user_model()
-
 
 class SignupView(generics.CreateAPIView):
     '''

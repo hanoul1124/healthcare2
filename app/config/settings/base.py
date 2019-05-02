@@ -45,7 +45,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
 
-# Auth User
 AUTH_USER_MODEL = 'members.User'
 
 # SECURITY WARNING: don't run with debug turned on in production!

@@ -33,7 +33,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     name = models.CharField(_('Name'), max_length=20)
     phone_number = models.CharField(_('Phone Number'), max_length=12, blank=True, null=True)
+    email = models.EmailField(_('Email Address'), blank=True, null=True)
     is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    is_superuser = models.BooleanField(
         _('staff status'),
         default=False,
         help_text=_('Designates whether the user can log into this admin site.'),
@@ -83,7 +89,6 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
-    email = models.EmailField(_('Email Address'), blank=True, null=True)
     hospital = models.CharField(_('Hospital'), max_length=30, blank=True, null=True)
     attending_physician = models.CharField(_('Attending Physician'), max_length=30, blank=True, null=True)
 

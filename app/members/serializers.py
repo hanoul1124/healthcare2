@@ -4,9 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from members.models import Profile
-
 User = get_user_model()
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'password',
             'name',
+            'email',
             'phone_number',
         )
 
@@ -28,7 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'height',
             'weight',
             'renal_disease',
-            'email',
+            # 'email',
             'hospital',
             'attending_physician',
         )
@@ -44,6 +43,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'username',
             'password',
             'name',
+            'email',
             'phone_number',
             'profile',
         )
@@ -71,13 +71,13 @@ class UserInfoSerializer(serializers.ModelSerializer):
         profile_instance.height = profile_data.get('height')
         profile_instance.weight = profile_data.get('weight')
         profile_instance.renal_disease = profile_data.get('renal_disease')
-        profile_instance.email = profile_data.get('email')
         profile_instance.attending_physician = profile_data.get('attending_physician')
         profile_instance.save()
 
         user.set_password(validated_data.get('password'))
         user.name = validated_data.get('name')
         user.phone_number = validated_data.get('phone_number')
+        user.email = validated_data.get('email')
         user.save()
 
         return user
