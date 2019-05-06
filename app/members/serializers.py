@@ -1,5 +1,6 @@
 import re
 from django.contrib.auth import get_user_model, authenticate
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -82,13 +83,16 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
         return user
 
+
 class CheckUniqueIDSerializer(serializers.Serializer):
     username = serializers.CharField()
 
     def validate(self, data):
-        if User.objects.get(username=data['username']):
-            raise ValidationError("username already exists")
-        return data
+        try:
+            if User.objects.get(username=data['username']):
+                raise ValidationError("username already exists")
+        except (AttributeError, ObjectDoesNotExist):
+            return data
 
 
 class PhoneNumberVerificationSerializer(serializers.Serializer):

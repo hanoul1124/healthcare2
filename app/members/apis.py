@@ -97,9 +97,9 @@ class PhoneNumberVerificationView(APIView):
             }
             res = requests.post(send_url, headers=headers, data=json.dumps(body))
             if not res.json()['status'] == '200':
-                return Response({"verification": False, "message": "인증번호 발송에 실패했습니다."},
+                return Response({"verification": False, "verificationNumber": "", "message": "인증번호 발송에 실패했습니다."},
                                 status=status.HTTP_400_BAD_REQUEST)
-            return Response({"verification": random_num, "message": "인증번호가 발송되었습니다."},
+            return Response({"verification": True, "verificationNumber": random_num, "message": "인증번호가 발송되었습니다."},
                             status=status.HTTP_202_ACCEPTED)
 
 
