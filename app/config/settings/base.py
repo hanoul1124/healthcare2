@@ -56,6 +56,7 @@ AUTH_USER_MODEL = 'members.User'
 INSTALLED_APPS = [
     'members',
     'tables',
+    'django.contrib.postgres',
     # 'members.apps.MembersConfig',
     'django.contrib.admin',
     'django.contrib.auth',

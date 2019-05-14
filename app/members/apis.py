@@ -164,6 +164,9 @@ class UserInfoView(APIView):
         serializer = UserInfoSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.update(request.user, serializer.validated_data)
-        return Response({"message": "수정되었습니다."}, status=status.HTTP_200_OK)
+            return Response({"message": "수정되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
