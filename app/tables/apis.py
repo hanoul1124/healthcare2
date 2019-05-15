@@ -8,8 +8,10 @@ User = get_user_model()
 
 class ExampleAPIView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'tables/example.html'
+    template_name = 'Table/example.html'
 
     def get(self, request):
         queryset = User.objects.all()
         return Response({"user_list": queryset})
+
+

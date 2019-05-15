@@ -4,8 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from members.models import Profile
+from .models import Profile
 User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

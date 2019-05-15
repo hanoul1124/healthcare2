@@ -25,7 +25,7 @@ from . import views
 
 urlpatterns_api = ([
     path('members/', include(urlpatterns_api_members)),
-    path('tables/', include(urlpatterns_api_tables))
+    path('Table/', include(urlpatterns_api_tables))
 ], 'api')
 
 urlpatterns = [

@@ -3,46 +3,15 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch.dispatcher import receiver
+
 User = get_user_model()
 
-# def Ingredient_validator()
 # unique true option test
 # if it doesn't work, use validator function
 
 
-# class Ingredient(models.Model):
-#     class Meta:
-#         verbose_name = '식재료'
-#         verbose_name_plural = f'{verbose_name} 목록'
-#
-#     def __str__(self):
-#         return f'{self.name_list[0]}'
-#
-#     name_list = ArrayField(
-#         models.CharField(max_length=10, blank=True, null=True),
-#         blank=True, null=True, size=6, unique=True
-#     )
-#
-#
-# class Food(models.Model):
-#     class Meta:
-#         verbose_name = '음식'
-#         verbose_name_plural = f'{verbose_name} 목록'
-#
-#     def __str__(self):
-#         return f'{self.name}'
-#
-#     name = models.CharField(max_length=12, blank=True, unique=True)
-#     ingredients = models.ManyToManyField(
-#         Ingredient,
-#         related_name='foods',
-#         related_query_name='foods',
-#         symmetrical=False
-#     )
-
-
-# unique true option test
-# if it doesn't work, use validator function
 class Table(models.Model):
     class Meta:
         verbose_name = '식단'
@@ -55,22 +24,42 @@ class Table(models.Model):
         models.CharField(max_length=20, blank=True, null=True),
         blank=True, null=True, size=8, unique=True, verbose_name='식단 구성'
     )
-    # foods = models.ManyToManyField(
-    #     Food,
-    #     related_name='tables',
-    #     related_query_name='tables',
-    #     blank=True, null=True,
-    #     verbose_name='음식 구성',
-    #     symmetrical=False
-    # )
-    recipe = models.TextField(blank=True, null=True, verbose_name='레시피')
-    nutrients = JSONField(blank=True, null=True)
 
-    # def validate_unique(self, exclude=None):
-    #     super(Table, self).validate_unique(exclude)
-    #     if Table.objects.filter(foods=self.foods.all()).count() >= 1:
-    #         raise ValidationError("이미 존재하는 식단입니다.")
-    #     return True
+    recipe = models.TextField(blank=True, null=True, verbose_name='레시피')
+    # nutrients = JSONField(blank=True, null=True)
+
+
+class Nutrient(models.Model):
+    class Meta:
+        verbose_name = '영양정보'
+        verbose_name_plural = f'{verbose_name} 목록'
+
+    def __str__(self):
+        return f'{self.table} 영양정보'
+
+    table = models.OneToOneField(Table, on_delete=models.CASCADE, primary_key=True)
+    calorie = models.PositiveSmallIntegerField(blank=True, null=True)
+    carbs = models.PositiveSmallIntegerField(blank=True, null=True)
+    fiber = models.PositiveSmallIntegerField(blank=True, null=True)
+    A_protein = models.PositiveSmallIntegerField(blank=True, null=True)
+    V_protein = models.PositiveSmallIntegerField(blank=True, null=True)
+    A_fat = models.PositiveSmallIntegerField(blank=True, null=True)
+    V_fat = models.PositiveSmallIntegerField(blank=True, null=True)
+    cholesterol = models.PositiveSmallIntegerField(blank=True, null=True)
+    salt = models.PositiveSmallIntegerField(blank=True, null=True)
+    potassium = models.PositiveSmallIntegerField(blank=True, null=True)
+    phosphorus = models.PositiveSmallIntegerField(blank=True, null=True)
+    A_calcium = models.PositiveSmallIntegerField(blank=True, null=True)
+    V_calcium = models.PositiveSmallIntegerField(blank=True, null=True)
+
+    @receiver(post_save, sender=Table)
+    def create_table_nutrient(sender, instance, created, **kwargs):
+        if created:
+            Nutrient.objects.create(table=instance)
+
+    @receiver(post_save, sender=Table)
+    def save_table_nutrient(sender, instance, **kwargs):
+        instance.nutrient.save()
 
 
 class TodayTable(models.Model):
@@ -116,7 +105,7 @@ class TableLog(models.Model):
         ('간식(오후)', 'Snack(PM)'),
     )
     user = models.ForeignKey(User, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
-    table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단')
+    table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단', on_delete=models.CASCADE)
     date = models.DateField(blank=True, null=True, auto_now_add=True, verbose_name='섭취 일자')
     time = models.CharField(
         max_length=8,
