@@ -18,7 +18,7 @@ class Table(models.Model):
         verbose_name_plural = f'{verbose_name} 목록'
 
     def __str__(self):
-        return f'{self.pk}번 식단'
+        return f'{self.pk}번 식단: {self.dietary_composition}'
 
     dietary_composition = ArrayField(
         models.CharField(max_length=20, blank=True, null=True),
@@ -68,7 +68,7 @@ class TodayTable(models.Model):
         verbose_name_plural = f'{verbose_name} 목록'
 
     def __str__(self):
-        return f'{self.date}의 식단'
+        return f'{self.date} {self.time}의 식단'
 
     TABLE_TIME_CHOICES = (
         ('아침', 'Breakfast'),
@@ -78,7 +78,7 @@ class TodayTable(models.Model):
         ('간식(오후)', 'Snack(PM)'),
     )
     table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
-    date = models.DateField(blank=True, null=True, verbose_name='날짜')
+    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
     time = models.CharField(
         max_length=8,
         choices=TABLE_TIME_CHOICES,
@@ -89,10 +89,12 @@ class TodayTable(models.Model):
     )
 
 
+# unique_together > date & time
 class TableLog(models.Model):
     class Meta:
         verbose_name = '오늘의 식단'
         verbose_name_plural = f'{verbose_name} 목록'
+        unique_together = ('date', 'time',)
 
     def __str__(self):
         return f'{self.pk}번 식단'
@@ -104,9 +106,9 @@ class TableLog(models.Model):
         ('간식(오전)', 'Snack(AM)'),
         ('간식(오후)', 'Snack(PM)'),
     )
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, db_index=True, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
     table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단', on_delete=models.CASCADE)
-    date = models.DateField(blank=True, null=True, auto_now_add=True, verbose_name='섭취 일자')
+    date = models.DateField(blank=True, db_index=True, null=True, auto_now_add=True, verbose_name='섭취 일자')
     time = models.CharField(
         max_length=8,
         choices=TABLE_TIME_CHOICES,

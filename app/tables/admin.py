@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 from django.conf import settings
 from django.contrib import admin
@@ -57,10 +58,15 @@ class TableAdmin(admin.ModelAdmin):
                                          worksheet.cell(food, 2).value is not None]
 
             br_table, br_created = Table.objects.get_or_create(dietary_composition=breakfast_composition_list)
+            TodayTable.objects.create(table=br_table, date=date.today(), time='아침')
             lc_table, lc_created = Table.objects.get_or_create(dietary_composition=launch_composition_list)
+            TodayTable.objects.create(table=lc_table, date=date.today(), time='점심')
             dn_table, dn_created = Table.objects.get_or_create(dietary_composition=dinner_composition_list)
+            TodayTable.objects.create(table=dn_table, date=date.today(), time='저녁')
             as_table, as_created = Table.objects.get_or_create(dietary_composition=am_snack_composition_list)
+            TodayTable.objects.create(table=as_table, date=date.today(), time='간식(오전)')
             ps_table, ps_created = Table.objects.get_or_create(dietary_composition=pm_snack_composition_list)
+            TodayTable.objects.create(table=ps_table, date=date.today(), time='간식(오후)')
 
             table_list = [br_table, lc_table,  dn_table, as_table, ps_table]
 
@@ -154,3 +160,4 @@ class TableAdmin(admin.ModelAdmin):
 
 admin.site.register(Table, TableAdmin)
 admin.site.register(Nutrient)
+admin.site.register(TodayTable)

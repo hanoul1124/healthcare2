@@ -69,14 +69,17 @@ class UserInfoSerializer(serializers.ModelSerializer):
     def update(self, user, validated_data):
         profile_data = validated_data.pop('profile')
         profile_instance = user.profile
-        profile_instance.gender = profile_data.get('gender')
-        profile_instance.height = profile_data.get('height')
-        profile_instance.weight = profile_data.get('weight')
-        profile_instance.renal_disease = profile_data.get('renal_disease')
-        profile_instance.attending_physician = profile_data.get('attending_physician')
+        profile_attr_list = [key for key in profile_data.__dict__.keys()]
+        for key in profile_attr_list:
+            setattr(profile_instance, key, profile_data.get(key))
+            # profile_instance.height = profile_data.get('height')
+            # profile_instance.weight = profile_data.get('weight')
+            # profile_instance.renal_disease = profile_data.get('renal_disease')
+            # profile_instance.hospital = profile_data.get('renal_disease')
+            # profile_instance.attending_physician = profile_data.get('attending_physician')
         profile_instance.save()
-
-        user.set_password(validated_data.get('password'))
+        if validated_data.get('password') != "passwordnochange":
+            user.set_password(validated_data.get('password'))
         user.name = validated_data.get('name')
         user.phone_number = validated_data.get('phone_number')
         user.email = validated_data.get('email')
