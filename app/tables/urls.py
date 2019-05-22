@@ -6,6 +6,7 @@ urlpatterns_api_tables = [
     path('today-table/', apis.TodayTableAPI.as_view()),
     path('table-list/', apis.TableListAPI.as_view()),
     path('main-page/', apis.MainPageAPI.as_view()),
-    path('make-log/', apis.MakeTableLogAPI.as_view())
+    path('make-log/', apis.MakeTableLogAPI.as_view()),
+    path('search/', apis.TableSearchAPI.as_view())
 ]
 

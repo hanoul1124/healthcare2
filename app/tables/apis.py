@@ -67,6 +67,20 @@ class TableListAPI(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
 
+# 한상식단 검색용 API
+class TableSearchAPI(generics.ListAPIView):
+    serializer_class = TableSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        # parameter로 전달하는 방식
+        if self.request.GET.get('keywords'):
+            keywords = self.request.GET.get('keywords')
+            queryset = Table.objects.filter(dietary_composition__icontains=keywords)
+            return queryset
+        else:
+            return ""
+
 # 메인페이지 API = 달력 + 섭취 기록(일주일 - 한 달)
 class MainPageAPI(APIView):
     permission_classes = (IsAuthenticated,)
