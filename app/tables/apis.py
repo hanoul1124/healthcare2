@@ -1,6 +1,7 @@
 import calendar
 from datetime import date
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 # from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
@@ -49,22 +50,39 @@ class TodayTableAPI(generics.ListAPIView):
     serializer_class = TodayTableSerializer
 
     def get_queryset(self):
-        try:
-            queryset = TodayTable.objects.filter(
+        queryset = cache.get('today_table')
+        if not queryset:
+            t_tables = TodayTable.objects.filter(
                 date=date.today()
+            )
+            if not t_tables:
+                return ""
+            cache.set('today_table', t_tables)
+            queryset = cache.get('today_table')
+
+            # queryset = TodayTable.objects.filter(
+            #     date=date.today()
                 # date__month=date.today().month,
                 # date__day=date.today().day
-            )
-            return queryset
-        except ObjectDoesNotExist:
-            return ""
+            # )
+        return queryset
 
 
 # 한상 식단 API
 class TableListAPI(generics.ListAPIView):
     serializer_class = TableSerializer
-    queryset = Table.objects.all()
+    # queryset = Table.objects.all()
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = cache.get('table_list')
+        if not queryset:
+            tables = Table.objects.all()
+            if not tables:
+                return ""
+            cache.set('table_list', tables)
+            queryset = cache.get('table_list')
+        return queryset
 
 
 # 한상식단 검색용 API
@@ -80,6 +98,7 @@ class TableSearchAPI(generics.ListAPIView):
             return queryset
         else:
             return ""
+
 
 # 메인페이지 API = 달력 + 섭취 기록(일주일 - 한 달)
 class MainPageAPI(APIView):

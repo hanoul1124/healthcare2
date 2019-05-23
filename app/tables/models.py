@@ -1,5 +1,8 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.cache import cache
 from django.db import models
 
 # Create your models here.
@@ -21,12 +24,20 @@ class Table(models.Model):
         return f'{self.pk}번 식단: {self.dietary_composition}'
 
     dietary_composition = ArrayField(
-        models.CharField(max_length=20, blank=True, null=True),
+        models.CharField(max_length=20, blank=True, null=True, default=""),
         blank=True, null=True, size=8, unique=True, verbose_name='식단 구성'
     )
 
-    recipe = models.TextField(blank=True, null=True, verbose_name='레시피')
+    recipe = models.TextField(blank=True, null=True, verbose_name='레시피', default="레시피")
     # nutrients = JSONField(blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        cache.delete('table_list')
+        super(Table, self).save(*args, **kwargs)
+        
+    def delete(self, *args, **kwargs):
+        cache.delete('table_list')
+        super(Table, self).delete(*args, **kwargs)
 
 
 class Nutrient(models.Model):
@@ -38,19 +49,19 @@ class Nutrient(models.Model):
         return f'{self.table} 영양정보'
 
     table = models.OneToOneField(Table, on_delete=models.CASCADE, primary_key=True)
-    calorie = models.PositiveSmallIntegerField(blank=True, null=True)
-    carbs = models.PositiveSmallIntegerField(blank=True, null=True)
-    fiber = models.PositiveSmallIntegerField(blank=True, null=True)
-    A_protein = models.PositiveSmallIntegerField(blank=True, null=True)
-    V_protein = models.PositiveSmallIntegerField(blank=True, null=True)
-    A_fat = models.PositiveSmallIntegerField(blank=True, null=True)
-    V_fat = models.PositiveSmallIntegerField(blank=True, null=True)
-    cholesterol = models.PositiveSmallIntegerField(blank=True, null=True)
-    salt = models.PositiveSmallIntegerField(blank=True, null=True)
-    potassium = models.PositiveSmallIntegerField(blank=True, null=True)
-    phosphorus = models.PositiveSmallIntegerField(blank=True, null=True)
-    A_calcium = models.PositiveSmallIntegerField(blank=True, null=True)
-    V_calcium = models.PositiveSmallIntegerField(blank=True, null=True)
+    calorie = models.FloatField(blank=True, null=True, default=0)
+    carbs = models.FloatField(blank=True, null=True, default=0)
+    fiber = models.FloatField(blank=True, null=True, default=0)
+    A_protein = models.FloatField(blank=True, null=True, default=0)
+    V_protein = models.FloatField(blank=True, null=True, default=0)
+    A_fat = models.FloatField(blank=True, null=True, default=0)
+    V_fat = models.FloatField(blank=True, null=True, default=0)
+    cholesterol = models.FloatField(blank=True, null=True, default=0)
+    salt = models.FloatField(blank=True, null=True, default=0)
+    potassium = models.FloatField(blank=True, null=True, default=0)
+    phosphorus = models.FloatField(blank=True, null=True, default=0)
+    A_calcium = models.FloatField(blank=True, null=True, default=0)
+    V_calcium = models.FloatField(blank=True, null=True, default=0)
 
     @receiver(post_save, sender=Table)
     def create_table_nutrient(sender, instance, created, **kwargs):
@@ -78,7 +89,7 @@ class TodayTable(models.Model):
         ('간식(오후)', 'Snack(PM)'),
     )
     table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
-    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
+    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜', auto_now_add=True)
     time = models.CharField(
         max_length=8,
         choices=TABLE_TIME_CHOICES,

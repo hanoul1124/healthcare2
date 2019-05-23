@@ -68,7 +68,17 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_crontab',
 ]
+
+
+CRONJOBS = [
+    ('0 0 * * *', 'app.cron.table_renewal_job'),
+    ('0 0 1 1 *', 'app.cron.table_log_renewal_job'),
+]
+
+# settings.py를 분리시켜 운영할 경우, 환경변수 인식을 위해서 필요한 설정.
+CRONTAB_DJANGO_SETTINGS_MODULE = 'app.config.settings.development'
 
 REST_FRAMEWORK = {
     # DRF Token authentication
