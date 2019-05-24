@@ -21,6 +21,11 @@ class TableAdmin(admin.ModelAdmin):
     def import_xlsx(self, request):
         if request.method == "POST":
             file = request.FILES.get('xlsx_file')
+            date_input = datetime.date(
+                int(request.POST.get('date_input_year')),
+                int(request.POST.get('date_input_month')),
+                int(request.POST.get('date_input_day'))
+            )
             # reader = csv.reader(csv_file)
             xlsx_file = openpyxl.load_workbook(file)
             worksheet = xlsx_file.active
@@ -58,15 +63,15 @@ class TableAdmin(admin.ModelAdmin):
                                          worksheet.cell(food, 2).value is not None]
 
             br_table, br_created = Table.objects.get_or_create(dietary_composition=breakfast_composition_list)
-            TodayTable.objects.create(table=br_table, date=date.today(), time='아침')
+            TodayTable.objects.create(table=br_table, date=date_input, time='아침')
             lc_table, lc_created = Table.objects.get_or_create(dietary_composition=launch_composition_list)
-            TodayTable.objects.create(table=lc_table, date=date.today(), time='점심')
+            TodayTable.objects.create(table=lc_table, date=date_input, time='점심')
             dn_table, dn_created = Table.objects.get_or_create(dietary_composition=dinner_composition_list)
-            TodayTable.objects.create(table=dn_table, date=date.today(), time='저녁')
+            TodayTable.objects.create(table=dn_table, date=date_input, time='저녁')
             as_table, as_created = Table.objects.get_or_create(dietary_composition=am_snack_composition_list)
-            TodayTable.objects.create(table=as_table, date=date.today(), time='간식(오전)')
+            TodayTable.objects.create(table=as_table, date=date_input, time='간식(오전)')
             ps_table, ps_created = Table.objects.get_or_create(dietary_composition=pm_snack_composition_list)
-            TodayTable.objects.create(table=ps_table, date=date.today(), time='간식(오후)')
+            TodayTable.objects.create(table=ps_table, date=date_input, time='간식(오후)')
 
             table_list = [br_table, lc_table,  dn_table, as_table, ps_table]
 

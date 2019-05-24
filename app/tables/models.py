@@ -89,7 +89,7 @@ class TodayTable(models.Model):
         ('간식(오후)', 'Snack(PM)'),
     )
     table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
-    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜', auto_now_add=True)
+    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
     time = models.CharField(
         max_length=8,
         choices=TABLE_TIME_CHOICES,
