@@ -19,9 +19,19 @@ class Table(models.Model):
     class Meta:
         verbose_name = '식단'
         verbose_name_plural = f'{verbose_name} 목록'
+        ordering = ['date']
 
     def __str__(self):
-        return f'{self.pk}번 식단: {self.dietary_composition}'
+        # return f'{self.pk}번 식단: {self.dietary_composition}'
+        return f'{self.date} {self.time}의 식단'
+
+    TABLE_TIME_CHOICES = (
+        ('아침', 'Breakfast'),
+        ('점심', 'Launch'),
+        ('저녁', 'Dinner'),
+        ('간식(오전)', 'Snack(AM)'),
+        ('간식(오후)', 'Snack(PM)'),
+    )
 
     dietary_composition = ArrayField(
         models.CharField(max_length=20, blank=True, null=True, default=""),
@@ -30,6 +40,16 @@ class Table(models.Model):
 
     recipe = models.TextField(blank=True, null=True, verbose_name='레시피', default="레시피")
     # nutrients = JSONField(blank=True, null=True)
+
+    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
+    time = models.CharField(
+        max_length=8,
+        choices=TABLE_TIME_CHOICES,
+        blank=True,
+        null=True,
+        default='아침',
+        verbose_name='섭취 시간'
+    )
     
     def save(self, *args, **kwargs):
         cache.delete('table_list')
@@ -73,37 +93,37 @@ class Nutrient(models.Model):
         instance.nutrient.save()
 
 
-class TodayTable(models.Model):
-    class Meta:
-        verbose_name = '오늘의 식단'
-        verbose_name_plural = f'{verbose_name} 목록'
-
-    def __str__(self):
-        return f'{self.date} {self.time}의 식단'
-
-    TABLE_TIME_CHOICES = (
-        ('아침', 'Breakfast'),
-        ('점심', 'Launch'),
-        ('저녁', 'Dinner'),
-        ('간식(오전)', 'Snack(AM)'),
-        ('간식(오후)', 'Snack(PM)'),
-    )
-    table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
-    date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
-    time = models.CharField(
-        max_length=8,
-        choices=TABLE_TIME_CHOICES,
-        blank=True,
-        null=True,
-        default='아침',
-        verbose_name='섭취 시간'
-    )
+# class TodayTable(models.Model):
+#     class Meta:
+#         verbose_name = '오늘의 식단'
+#         verbose_name_plural = f'{verbose_name} 목록'
+#
+#     def __str__(self):
+#         return f'{self.date} {self.time}의 식단'
+#
+#     TABLE_TIME_CHOICES = (
+#         ('아침', 'Breakfast'),
+#         ('점심', 'Launch'),
+#         ('저녁', 'Dinner'),
+#         ('간식(오전)', 'Snack(AM)'),
+#         ('간식(오후)', 'Snack(PM)'),
+#     )
+#     table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
+#     date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
+#     time = models.CharField(
+#         max_length=8,
+#         choices=TABLE_TIME_CHOICES,
+#         blank=True,
+#         null=True,
+#         default='아침',
+#         verbose_name='섭취 시간'
+#     )
 
 
 # unique_together > date & time
 class TableLog(models.Model):
     class Meta:
-        verbose_name = '오늘의 식단'
+        verbose_name = '섭취 기록'
         verbose_name_plural = f'{verbose_name} 목록'
         unique_together = ('date', 'time',)
 

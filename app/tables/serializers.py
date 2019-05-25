@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from .models import Table, Nutrient, TodayTable, TableLog
+from .models import *
 
 
 class NutrientSerializer(serializers.ModelSerializer):
@@ -31,6 +31,8 @@ class TableSerializer(serializers.ModelSerializer):
         model = Table
         fields = (
             'pk',
+            'date',
+            'time',
             'dietary_composition',
             'recipe',
             'nutrient'
@@ -49,17 +51,17 @@ class TableCompactSerializer(serializers.ModelSerializer):
         )
 
 
-class TodayTableSerializer(serializers.ModelSerializer):
-    table = TableCompactSerializer()
-
-    class Meta:
-        model = TodayTable
-        fields = (
-            'table',
-            'date',
-            'time'
-        )
-        read_only_fields = ('__all__',)
+# class TodayTableSerializer(serializers.ModelSerializer):
+#     table = TableCompactSerializer()
+#
+#     class Meta:
+#         model = TodayTable
+#         fields = (
+#             'table',
+#             'date',
+#             'time'
+#         )
+#         read_only_fields = ('__all__',)
 
 
 class TableLogSerializer(serializers.ModelSerializer):

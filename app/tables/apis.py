@@ -45,27 +45,27 @@ class ExampleAPIView(APIView):
 # 캐싱 사용 > TodayTable / TableLog (유저단위)
 
 # 오늘의 식단 API
-class TodayTableAPI(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = TodayTableSerializer
+# class TodayTableAPI(generics.ListAPIView):
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = TodayTableSerializer
+#
+#     def get_queryset(self):
+#         queryset = cache.get('today_table')
+#         if not queryset:
+#             t_tables = TodayTable.objects.filter(
+#                 date=date.today()
+#             )
+#             if not t_tables:
+#                 return ""
+#             cache.set('today_table', t_tables)
+#             queryset = cache.get('today_table')
 
-    def get_queryset(self):
-        queryset = cache.get('today_table')
-        if not queryset:
-            t_tables = TodayTable.objects.filter(
-                date=date.today()
-            )
-            if not t_tables:
-                return ""
-            cache.set('today_table', t_tables)
-            queryset = cache.get('today_table')
-
-            # queryset = TodayTable.objects.filter(
-            #     date=date.today()
-                # date__month=date.today().month,
-                # date__day=date.today().day
-            # )
-        return queryset
+            ## queryset = TodayTable.objects.filter(
+            ##     date=date.today()
+                ## date__month=date.today().month,
+                ## date__day=date.today().day
+            ## )
+         # return queryset
 
 
 # 한상 식단 API
