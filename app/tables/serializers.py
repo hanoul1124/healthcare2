@@ -50,7 +50,6 @@ class TableCompactSerializer(serializers.ModelSerializer):
             'nutrient'
         )
 
-
 # class TodayTableSerializer(serializers.ModelSerializer):
 #     table = TableCompactSerializer()
 #

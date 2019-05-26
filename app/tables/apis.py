@@ -84,6 +84,30 @@ class TableListAPI(generics.ListAPIView):
             queryset = cache.get('table_list')
         return queryset
 
+# TODO
+# 이 달의 식단 > 이번 달 30일치의 식단을 전부?
+# 그럼 중복 포함? or 제거?
+# 한상 식단(전체 테이블 리스트)와의 차이?
+
+
+# 이번 달의 식단 목록 불러오기(임시 API)
+class MonthlyTableListAPI(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TableSerializer
+
+    def get_queryset(self):
+        queryset = cache.get('monthly_table_list')
+        if not queryset:
+            monthrange = calendar.monthrange(date.today().year, date.today().month)
+            from_date = date.today().replace(day=1)
+            to_date = date.today().replace(day=monthrange[1])
+            tables = Table.objects.filter(date__range=[from_date, to_date])
+            if not tables:
+                return ""
+            cache.set('monthly_table_list', tables)
+            queryset = cache.get('monthly_table_list')
+        return queryset
+
 
 # 한상식단 검색용 API
 class TableSearchAPI(generics.ListAPIView):
