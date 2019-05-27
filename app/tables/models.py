@@ -20,6 +20,7 @@ class Table(models.Model):
         verbose_name = '식단'
         verbose_name_plural = f'{verbose_name} 목록'
         ordering = ['date']
+        unique_together = ('date', 'time',)
 
     def __str__(self):
         # return f'{self.pk}번 식단: {self.dietary_composition}'
@@ -35,7 +36,8 @@ class Table(models.Model):
 
     dietary_composition = ArrayField(
         models.CharField(max_length=20, blank=True, null=True, default=""),
-        blank=True, null=True, size=8, unique=True, verbose_name='식단 구성'
+        blank=True, null=True, size=8, verbose_name='식단 구성'
+        # ,unique=True
     )
 
     recipe = models.TextField(blank=True, null=True, verbose_name='레시피', default="레시피")

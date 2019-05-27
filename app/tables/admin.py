@@ -182,8 +182,11 @@ class TableAdmin(admin.ModelAdmin):
 #         ]
 #         return urls + new_urls
 
+class TableLogAdmin(admin.ModelAdmin):
+    list_display = ['user', 'date', 'time']
+
 
 admin.site.register(Table, TableAdmin)
 admin.site.register(Nutrient)
 # admin.site.register(TodayTable)
-admin.site.register(TableLog)
+admin.site.register(TableLog, TableLogAdmin)
