@@ -4,10 +4,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.cache import cache
 from django.db import models
-
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -19,7 +19,7 @@ class Table(models.Model):
     class Meta:
         verbose_name = '식단'
         verbose_name_plural = f'{verbose_name} 목록'
-        ordering = ['date']
+        ordering = ['date', 'pk']
         unique_together = ('date', 'time',)
 
     def __str__(self):
@@ -127,7 +127,8 @@ class TableLog(models.Model):
     class Meta:
         verbose_name = '섭취 기록'
         verbose_name_plural = f'{verbose_name} 목록'
-        unique_together = ('date', 'time',)
+        unique_together = ('user', 'date', 'time',)
+        ordering = ['date', 'pk']
 
     def __str__(self):
         return f'{self.pk}번 식단'
@@ -141,7 +142,7 @@ class TableLog(models.Model):
     )
     user = models.ForeignKey(User, db_index=True, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
     table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단', on_delete=models.CASCADE)
-    date = models.DateField(blank=True, db_index=True, null=True, auto_now_add=True, verbose_name='섭취 일자')
+    date = models.DateField(blank=True, db_index=True, null=True, default=timezone.now, verbose_name='섭취 일자')
     time = models.CharField(
         max_length=8,
         choices=TABLE_TIME_CHOICES,

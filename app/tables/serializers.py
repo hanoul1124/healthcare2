@@ -50,6 +50,29 @@ class TableCompactSerializer(serializers.ModelSerializer):
             'nutrient'
         )
 
+# class TableListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Table
+#         fields = (
+#             'pk',
+#             'date',
+#             'time'
+#             'dietary_composition',
+#         )
+#
+#
+# class TableCompactSerializer(serializers.ModelSerializer):
+#     nutrient = NutrientSerializer()
+#
+#     class Meta:
+#         model = Table
+#         fields = (
+#             'pk',
+#             'dietary_composition',
+#             'nutrient'
+#         )
+
+
 # class TodayTableSerializer(serializers.ModelSerializer):
 #     table = TableCompactSerializer()
 #
