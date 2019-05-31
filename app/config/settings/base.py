@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 import json
 import os
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -68,17 +70,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_crontab',
+    # 'django_crontab',
 ]
-
-
-CRONJOBS = [
-    ('0 0 * * *', 'app.cron.table_renewal_job'),
-    ('0 0 1 1 *', 'app.cron.table_log_renewal_job'),
-]
-
-# settings.py를 분리시켜 운영할 경우, 환경변수 인식을 위해서 필요한 설정.
-CRONTAB_DJANGO_SETTINGS_MODULE = 'app.config.settings.development'
 
 REST_FRAMEWORK = {
     # DRF Token authentication
@@ -198,3 +191,33 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# CRON TAB > Celery Beat 이관
+# Cron Job Settings
+# CRONJOBS = [
+#     ('0 0 * * *', 'app.cron.table_renewal_job'),
+#     ('0 0 1 1 *', 'app.cron.table_log_renewal_job'),
+#     ('0 0 1 * *', 'app.cron.user_default_log_job'),
+# ]
+
+# settings.py를 분리시켜 운영할 경우, 환경변수 인식을 위해서 필요한 설정.
+# CRONTAB_DJANGO_SETTINGS_MODULE = 'app.config.settings.development'
+
+# Celery Settings
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {
+    'user-default-log-per-month': {
+        'task': 'tables.tasks.make_default_log_monthly',
+        'schedule': crontab(day_of_month="1", hour=0, minute=0)
+    },
+    'table-renewal-per-day': {
+        'task': 'tables.tasks.table_renewal',
+        'schedule': crontab(hour=0, minute=0)
+    },
+    'table-log-renewal-per-year': {
+        'task': 'tables.tasks.table_log_renewal',
+        'schedule': crontab(month_of_year="1", day_of_month="1", hour=0, minute=0)
+    },
+}
