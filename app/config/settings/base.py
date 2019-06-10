@@ -58,9 +58,9 @@ AUTH_USER_MODEL = 'members.User'
 INSTALLED_APPS = [
     'members',
     'tables',
+    'information',
     'openpyxl',
     'django.contrib.postgres',
-    # 'members.apps.MembersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     # 'django_crontab',
 ]
 
@@ -220,4 +222,11 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'tables.tasks.table_log_renewal',
         'schedule': crontab(month_of_year="1", day_of_month="1", hour=0, minute=0)
     },
+}
+
+# ElasticSearch_DSL
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    }
 }

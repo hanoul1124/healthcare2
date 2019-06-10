@@ -1,7 +1,5 @@
-import datetime
-
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
 # Create your models here.

@@ -34,3 +34,8 @@ CACHES = {
         }
     }
 }
+
+# MultiDB Router for OPEN API(information applicatoin)
+DATABASE_ROUTERS = [
+    'information.routers.OpenAPIDBRouter'
+]

@@ -19,13 +19,14 @@ from django.urls import path, include
 # django.conf.settings로 해야만 env에 설정한 DJANGO_SETTINGS_MODULE 연결
 from django.conf import settings
 from members.urls import urlpatterns_api_members
-
 from tables.urls import urlpatterns_api_tables
+from information.urls import urlpatterns_api_information
 from . import views
 
 urlpatterns_api = ([
     path('members/', include(urlpatterns_api_members)),
-    path('tables/', include(urlpatterns_api_tables))
+    path('tables/', include(urlpatterns_api_tables)),
+    path('information/', include(urlpatterns_api_information))
 ], 'api')
 
 urlpatterns = [

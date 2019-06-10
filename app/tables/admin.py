@@ -13,6 +13,7 @@ from .models import *
 
 # Register your models here.
 
+
 class TableAdmin(admin.ModelAdmin):
     change_list_template = 'admin/tables/change_list.html'
 
@@ -21,7 +22,7 @@ class TableAdmin(admin.ModelAdmin):
     def import_xlsx(self, request):
         if request.method == "POST":
             file = request.FILES.get('xlsx_file')
-            date_input = datetime.date(
+            date_input = date(
                 int(request.POST.get('date_input_year')),
                 int(request.POST.get('date_input_month')),
                 int(request.POST.get('date_input_day'))
