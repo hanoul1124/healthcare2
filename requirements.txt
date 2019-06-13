@@ -9,7 +9,7 @@ certifi==2019.3.9
 chardet==3.0.4
 confusable-homoglyphs==3.2.0
 decorator==4.3.2
-Django==2.1.7
+Django==2.2.2
 django-celery==3.3.0
 django-cors-headers==2.5.2
 django-crontab==0.7.1
@@ -42,7 +42,7 @@ meld3==1.0.2
 mypy==0.701
 mypy-extensions==0.4.1
 openpyxl==2.6.2
-parso==0.3.4
+parso==0.4.0
 pexpect==4.6.0
 pickleshare==0.7.5
 Pillow==5.4.1
