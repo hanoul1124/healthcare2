@@ -1,15 +1,24 @@
 # Create your views here.
 
 from django_elasticsearch_dsl_drf.constants import (
-    LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN, LOOKUP_QUERY_GT,
-    LOOKUP_QUERY_GTE, LOOKUP_QUERY_LT, LOOKUP_QUERY_LTE
+    LOOKUP_FILTER_TERMS,
+    LOOKUP_FILTER_RANGE,
+    LOOKUP_FILTER_PREFIX,
+    LOOKUP_FILTER_WILDCARD,
+    LOOKUP_QUERY_IN,
+    LOOKUP_QUERY_GT,
+    LOOKUP_QUERY_GTE,
+    LOOKUP_QUERY_LT,
+    LOOKUP_QUERY_LTE,
+    LOOKUP_QUERY_EXCLUDE,
 )
 
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
-    SearchFilterBackend
+    SearchFilterBackend,
+    # MultiMatchSearchFilterBackend,
 )
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from . import documents
@@ -25,6 +34,7 @@ class FNIViewSet(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
+        # MultiMatchSearchFilterBackend,
     ]
 
     # Define search fields
@@ -32,6 +42,13 @@ class FNIViewSet(DocumentViewSet):
         'food_name',
         'food_group',
     )
+
+    # Multi Match search fields(by MultiMatchSearchFilter Backend)
+    # ** Not work properly
+    # multi_match_search_fields = {
+        # 'food_name': {'boost': 5},
+        # 'food_group': {'boost': 2},
+    # }
 
     # Filter fields
     filter_fields = {
@@ -46,8 +63,10 @@ class FNIViewSet(DocumentViewSet):
                 LOOKUP_QUERY_LTE,
             ],
         },
-        'food_name': 'food_name.raw',
-        'food_group': 'food_group.raw',
+        # 'food_name': 'food_name.raw',
+        # 'food_group': 'food_group.raw',
+        'food_name': 'food_name',
+        'food_group': 'food_group',
     }
 
     # Define ordering fields
@@ -58,4 +77,39 @@ class FNIViewSet(DocumentViewSet):
     }
 
     # Specify default ordering
+    ordering = ('id',)
+
+
+# HFI Search View
+class HFIViewSet(DocumentViewSet):
+    document = documents.HFIDocument
+    serializer_class = serializers.HFIDocumentSerializer
+    lookup_field = 'pk'
+    filter_backends = [
+        FilteringFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+        SearchFilterBackend,
+    ]
+
+    # Define Search Fields
+    search_fields = (
+        'material_name',
+        'feature',
+        'caution'
+    )
+
+    filter_fields = {
+        'material_name': 'material_name.raw',
+        'feature': 'feature',
+        'caution': 'caution',
+    }
+
+    # Define Ordering Fields
+    ordering_fields = {
+        'id': 'id',
+        'material_name': 'material_name.raw',
+    }
+
+    # Specify Default Ordering
     ordering = ('id',)

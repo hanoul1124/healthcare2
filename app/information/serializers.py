@@ -21,3 +21,16 @@ class FNIDocumentSerializer(DocumentSerializer):
             'saturated_fatty_acid',
             'trans_fat'
         )
+
+
+class HFIDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = HFIDocument
+        fields = (
+            'id',
+            'material_name',
+            'material_number',
+            'daily_limit',
+            'feature',
+            'caution'
+        )

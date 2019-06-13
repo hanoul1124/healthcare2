@@ -7,18 +7,27 @@ connections.create_connection(hosts=['localhost:9200'])
 
 # Name of the Elasticsearch index
 fni_index = Index('fnis')
+hfi_index = Index('hfis')
 
 # See Elasticsearch Indices API reference for available settings
 fni_index.settings(
     number_of_shards=1,
     number_of_replicas=0
 )
+hfi_index.settings(
+    number_of_shards=1,
+    number_of_replicas=0
+)
 
+
+# Nori 형태소 분석기 사용(ElasticSearch 공식 한글 형태소 분석 플러그인)
 nori_analyzer = analyzer(
     'nori_analyzer',
     tokenizer="nori_tokenizer"
 )
 
+
+# Index 정의
 @fni_index.doc_type
 class FNIDocument(DocType):
     id = fields.IntegerField(attr='pk')
@@ -69,3 +78,25 @@ class FNIDocument(DocType):
     #
     # id = fields.IntegerField(attr='pk')
 
+
+@hfi_index.doc_type
+class HFIDocument(DocType):
+    id = fields.IntegerField(attr='pk')
+    material_name = fields.StringField(
+        analyzer=nori_analyzer,
+        fields={
+            'raw': fields.StringField(analyzer='keyword'),
+        }
+    )
+    material_number = fields.StringField(
+        analyzer=nori_analyzer,
+        fields={
+            'raw': fields.StringField(analyzer='keyword'),
+        }
+    )
+    daily_limit = fields.StringField()
+    feature = fields.TextField()
+    caution = fields.TextField()
+
+    class Meta:
+        model = HFI

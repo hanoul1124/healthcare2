@@ -57,4 +57,9 @@ class FNIAdmin(OpenAPIDBModelAdmin):
     list_display = ['food_name', 'pk']
 
 
+class HFIAdmin(OpenAPIDBModelAdmin):
+    list_display = ['material_name', 'pk']
+
+
 admin.site.register(FNI, FNIAdmin)
+admin.site.register(HFI, HFIAdmin)

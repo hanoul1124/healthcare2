@@ -20,13 +20,14 @@ from django.urls import path, include
 from django.conf import settings
 from members.urls import urlpatterns_api_members
 from tables.urls import urlpatterns_api_tables
-from information.urls import urlpatterns_api_information
+from information.urls import *
 from . import views
 
 urlpatterns_api = ([
     path('members/', include(urlpatterns_api_members)),
     path('tables/', include(urlpatterns_api_tables)),
-    path('information/', include(urlpatterns_api_information))
+    path('information/', include(urlpatterns_fni_information)),
+    path('information/', include(urlpatterns_hfi_information))
 ], 'api')
 
 urlpatterns = [
