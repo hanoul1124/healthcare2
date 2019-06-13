@@ -39,3 +39,48 @@ class HFI(models.Model):
     daily_limit = models.CharField(blank=True, null=True, max_length=30, verbose_name='1일 섭취량 상한선')
     feature = models.TextField(blank=True, null=True, verbose_name='주요 기능성')
     caution = models.TextField(blank=True, null=True, verbose_name='섭취 주의사항')
+
+
+# 건강기능성식품 품목 분류정보
+class HFC(models.Model):
+    class Meta:
+        verbose_name = '건강기능성식품 품목 분류정보'
+        verbose_name_plural = f'{verbose_name} 목록'
+
+    def __str__(self):
+        return f'{self.material_name}'
+
+    material_name = models.CharField(blank=True, null=True, max_length=100, verbose_name='원료명')
+    ingredient = models.CharField(blank=True, null=True, max_length=30, verbose_name='성분명')
+    raw_daily_limit = models.CharField(blank=True, null=True, max_length=12, verbose_name='1일 섭취량 상한선')
+    limit_standard = models.CharField(blank=True, null=True, max_length=12, verbose_name='섭취량 단위')
+    feature = models.TextField(blank=True, null=True, verbose_name='주요 기능성')
+    caution = models.TextField(blank=True, null=True, verbose_name='섭취 주의사항')
+
+    @property
+    def daily_limit(self):
+        return f'{self.raw_daily_limit}'+f'{self.limit_standard}'
+
+    @property
+    def modified_feature(self):
+        return self.feature.replace("\n", " ")
+
+
+# 건강기능성식품 기능성 원료인정현황
+class HFA(models.Model):
+    class Meta:
+        verbose_name = '건강기능성식품 기능성 원료인정현황'
+        verbose_name_plural = f'{verbose_name} 목록'
+
+    def __str__(self):
+        return f'{self.material_name}'
+
+    material_name = models.CharField(blank=True, null=True, max_length=100, verbose_name='원료명')
+    company = models.CharField(blank=True, null=True, max_length=30, verbose_name='회사명')
+    daily_intake = models.CharField(blank=True, null=True, max_length=150, verbose_name='1일 권 섭취량')
+    feature = models.TextField(blank=True, null=True, verbose_name='주요 기능성')
+    caution = models.TextField(blank=True, null=True, verbose_name='섭취 주의사항')
+
+    @property
+    def modified_caution(self):
+        return self.caution.replace("\n", " ")

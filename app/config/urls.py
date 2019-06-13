@@ -27,7 +27,9 @@ urlpatterns_api = ([
     path('members/', include(urlpatterns_api_members)),
     path('tables/', include(urlpatterns_api_tables)),
     path('information/', include(urlpatterns_fni_information)),
-    path('information/', include(urlpatterns_hfi_information))
+    path('information/', include(urlpatterns_hfi_information)),
+    path('information/', include(urlpatterns_hfc_information)),
+    path('information/', include(urlpatterns_hfa_information))
 ], 'api')
 
 urlpatterns = [

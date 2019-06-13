@@ -2,6 +2,7 @@ from rest_framework.routers import SimpleRouter
 
 from . import views
 
+# fni
 fni_router = SimpleRouter()
 fni_router.register(
     prefix='fni',
@@ -11,14 +12,36 @@ fni_router.register(
 
 urlpatterns_fni_information = fni_router.urls
 
+# hfi
 hfi_router = SimpleRouter()
 hfi_router.register(
     prefix='hfi',
     base_name='HFI',
     viewset=views.HFIViewSet
 )
-
 urlpatterns_hfi_information = hfi_router.urls
+
+
+# hfc
+hfc_router = SimpleRouter()
+hfc_router.register(
+    prefix='hfc',
+    base_name='HFC',
+    viewset=views.HFCViewSet
+)
+
+urlpatterns_hfc_information = hfc_router.urls
+
+
+# hfa
+hfa_router = SimpleRouter()
+hfa_router.register(
+    prefix='hfa',
+    base_name='HFA',
+    viewset=views.HFAViewSet
+)
+
+urlpatterns_hfa_information = hfa_router.urls
 
 
 # I-0050 : 건강기능식품 개별인정형 정보

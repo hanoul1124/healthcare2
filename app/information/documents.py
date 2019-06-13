@@ -8,6 +8,8 @@ connections.create_connection(hosts=['localhost:9200'])
 # Name of the Elasticsearch index
 fni_index = Index('fnis')
 hfi_index = Index('hfis')
+hfc_index = Index('hfcs')
+hfa_index = Index('hfas')
 
 # See Elasticsearch Indices API reference for available settings
 fni_index.settings(
@@ -15,6 +17,14 @@ fni_index.settings(
     number_of_replicas=0
 )
 hfi_index.settings(
+    number_of_shards=1,
+    number_of_replicas=0
+)
+hfc_index.settings(
+    number_of_shards=1,
+    number_of_replicas=0
+)
+hfa_index.settings(
     number_of_shards=1,
     number_of_replicas=0
 )
@@ -95,8 +105,57 @@ class HFIDocument(DocType):
         }
     )
     daily_limit = fields.StringField()
-    feature = fields.TextField()
-    caution = fields.TextField()
+    feature = fields.TextField(analyzer=nori_analyzer)
+    caution = fields.TextField(analyzer=nori_analyzer)
 
     class Meta:
         model = HFI
+
+
+@hfc_index.doc_type
+class HFCDocument(DocType):
+    id = fields.IntegerField(attr='pk')
+    material_name = fields.StringField(
+        analyzer=nori_analyzer,
+        fields={
+            'raw': fields.StringField(analyzer='keyword'),
+        }
+    )
+    ingredient = fields.StringField(
+        analyzer=nori_analyzer,
+        fields={
+            'raw': fields.StringField(analyzer='keyword'),
+        }
+    )
+    daily_limit = fields.StringField(attr='daily_limit')
+    feature = fields.TextField(
+        attr='modified_feature',
+        analyzer=nori_analyzer
+    )
+    caution = fields.TextField(analyzer=nori_analyzer)
+
+    class Meta:
+        model = HFC
+
+
+@hfa_index.doc_type
+class HFADocument(DocType):
+    id = fields.IntegerField(attr='pk')
+    material_name = fields.StringField(
+        analyzer=nori_analyzer,
+        fields={
+            'raw': fields.StringField(analyzer='keyword'),
+        }
+    )
+    company = fields.StringField(
+        analyzer=nori_analyzer,
+    )
+    daily_intake = fields.StringField()
+    feature = fields.TextField(analyzer=nori_analyzer)
+    caution = fields.TextField(
+        attr='modified_caution',
+        analyzer=nori_analyzer
+    )
+
+    class Meta:
+        model = HFA

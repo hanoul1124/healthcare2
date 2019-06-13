@@ -34,3 +34,29 @@ class HFIDocumentSerializer(DocumentSerializer):
             'feature',
             'caution'
         )
+
+
+class HFCDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = HFCDocument
+        fields = (
+            'id',
+            'material_name',
+            'ingredient',
+            'daily_limit',
+            'feature',
+            'caution'
+        )
+
+
+class HFADocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = HFADocument
+        fields = (
+            'id',
+            'material_name',
+            'company',
+            'daily_intake',
+            'feature',
+            'caution'
+        )

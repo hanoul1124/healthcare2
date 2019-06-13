@@ -113,3 +113,77 @@ class HFIViewSet(DocumentViewSet):
 
     # Specify Default Ordering
     ordering = ('id',)
+
+
+# HFC Search View
+class HFCViewSet(DocumentViewSet):
+    document = documents.HFCDocument
+    serializer_class = serializers.HFCDocumentSerializer
+    lookup_field = 'pk'
+    filter_backends = [
+        FilteringFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+        SearchFilterBackend,
+    ]
+
+    # Define Search Fields
+    search_fields = (
+        'material_name',
+        'ingredient',
+        'feature',
+        'caution'
+    )
+
+    filter_fields = {
+        'material_name': 'material_name.raw',
+        'ingredient': 'ingredient.raw',
+        'feature': 'feature',
+        'caution': 'caution',
+    }
+
+    # Define Ordering Fields
+    ordering_fields = {
+        'id': 'id',
+        'ingredient': 'ingredient.raw',
+    }
+
+    # Specify Default Ordering
+    ordering = ('id',)
+
+
+# HFC Search View
+class HFAViewSet(DocumentViewSet):
+    document = documents.HFADocument
+    serializer_class = serializers.HFADocumentSerializer
+    lookup_field = 'pk'
+    filter_backends = [
+        FilteringFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+        SearchFilterBackend,
+    ]
+
+    # Define Search Fields
+    search_fields = (
+        'material_name',
+        'company',
+        'feature',
+        'caution'
+    )
+
+    filter_fields = {
+        'material_name': 'material_name.raw',
+        'company': 'company',
+        'feature': 'feature',
+        'caution': 'caution',
+    }
+
+    # Define Ordering Fields
+    ordering_fields = {
+        'id': 'id',
+        'material_name': 'material_name.raw',
+    }
+
+    # Specify Default Ordering
+    ordering = ('id',)

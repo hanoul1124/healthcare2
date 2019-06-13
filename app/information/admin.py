@@ -61,5 +61,14 @@ class HFIAdmin(OpenAPIDBModelAdmin):
     list_display = ['material_name', 'pk']
 
 
+class HFCAdmin(OpenAPIDBModelAdmin):
+    list_display = ['material_name', 'pk']
+
+
+class HFAAdmin(OpenAPIDBModelAdmin):
+    list_display = ['material_name', 'pk']
+
 admin.site.register(FNI, FNIAdmin)
 admin.site.register(HFI, HFIAdmin)
+admin.site.register(HFC, HFCAdmin)
+admin.site.register(HFA, HFAAdmin)
