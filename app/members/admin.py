@@ -4,9 +4,14 @@ from django.contrib import admin
 from .models import *
 
 
+class ProfileInline(admin.StackedInline):
+    model = Profile
+
+
 class UserAdmin(admin.ModelAdmin):
     model = User
     list_display = ['username']
+    inlines = [ProfileInline]
 
     def save_model(self, request, obj, form, change):
         super(UserAdmin, self).save_model(request, obj, form, change)
@@ -15,4 +20,3 @@ class UserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Profile)

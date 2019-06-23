@@ -15,7 +15,7 @@ from .models import *
 
 
 class TableAdmin(admin.ModelAdmin):
-    change_list_template = 'admin/tables/change_list.html'
+    change_list_template = 'admin/tables/Table/change_list.html'
 
     # XLSX 파일을 Import 하여 실행할 기능을 정의한다.
     # Import XLSX

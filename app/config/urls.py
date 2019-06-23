@@ -38,6 +38,9 @@ urlpatterns = [
     path('api/', include(urlpatterns_api)),
 ]
 
+admin.site.site_header = "App Name 관리자 포털"
+admin.site.site_title = "App Name Admin Portal"
+admin.site.index_title = "App Name Admin Portal"
 
 # MEDIA_URL로 시작하는 URL은 static()내의 serve() 함수를 통해 처리
 # MEDIA_ROOT기준으로 파일을 검색함

@@ -152,7 +152,7 @@ class HFCViewSet(DocumentViewSet):
     ordering = ('id',)
 
 
-# HFC Search View
+# HFA Search View
 class HFAViewSet(DocumentViewSet):
     document = documents.HFADocument
     serializer_class = serializers.HFADocumentSerializer
