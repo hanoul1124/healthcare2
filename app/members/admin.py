@@ -10,8 +10,14 @@ class ProfileInline(admin.StackedInline):
 
 class UserAdmin(admin.ModelAdmin):
     model = User
+    change_list_template = 'admin/members/User/change_list.html'
+    fields = [
+        'username', 'password', 'name', 'phone_number', 'email',
+        'date_joined', 'last_login', 'is_active', 'is_superuser', 'is_staff'
+    ]
     list_display = ['username']
     inlines = [ProfileInline]
+    search_fields = ['username', 'name', 'email', 'phone_number']
 
     def save_model(self, request, obj, form, change):
         super(UserAdmin, self).save_model(request, obj, form, change)

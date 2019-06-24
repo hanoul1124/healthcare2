@@ -8,14 +8,26 @@ from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import path
 import openpyxl
+from rangefilter.filter import DateRangeFilter
+
 from .forms import XLSXImportForm
 from .models import *
 
 # Register your models here.
 
 
+class NutrientInline(admin.StackedInline):
+    model = Nutrient
+
+
 class TableAdmin(admin.ModelAdmin):
+    model = Table
+    search_fields = ['date', 'dietary_composition']
     change_list_template = 'admin/tables/Table/change_list.html'
+    inlines = [NutrientInline]
+    list_filter = (
+        ('date', DateRangeFilter),
+    )
 
     # XLSX 파일을 Import 하여 실행할 기능을 정의한다.
     # Import XLSX
@@ -184,10 +196,17 @@ class TableAdmin(admin.ModelAdmin):
 #         return urls + new_urls
 
 class TableLogAdmin(admin.ModelAdmin):
+    model = TableLog
+    change_list_template = 'admin/tables/TableLog/change_list.html'
+    search_fields = [
+        'user__username', 'user__name', 'date'
+    ]
     list_display = ['user', 'date', 'time']
+    list_filter = (
+        ('date', DateRangeFilter),
+    )
 
 
 admin.site.register(Table, TableAdmin)
-admin.site.register(Nutrient)
 # admin.site.register(TodayTable)
 admin.site.register(TableLog, TableLogAdmin)

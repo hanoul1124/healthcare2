@@ -22,7 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
-        _('username'),
+        _('ID'),
         max_length=20,
         unique=True,
         help_text=_('Required. 20 characters or fewer. Letters, digits and @/./+/-/_ only.'),

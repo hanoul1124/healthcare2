@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
+    'rangefilter',
     # 'django_crontab',
 ]
 
