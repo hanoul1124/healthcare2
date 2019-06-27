@@ -34,6 +34,7 @@ urlpatterns_api = ([
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('summernote/', include('django_summernote.urls')),
     path('', views.index, name='index'),
     path('api/', include(urlpatterns_api)),
 ]
@@ -48,6 +49,6 @@ admin.site.index_title = "App Name Admin Portal"
 # 단 production 환경에서는 사용하지 않는 것을 권장하므로, 조건 처리
 # 이를 미리 static() 내부에서 설정해놓았기 때문에, 따로 if DEBUG = True 옵션을 줄 필요는 없다
 urlpatterns += static(
-    prefix=settings.MEDIA_URL,
+    settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT,
 )

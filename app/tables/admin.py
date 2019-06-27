@@ -1,6 +1,7 @@
 import os
 from datetime import date
 
+import django_summernote
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
@@ -8,6 +9,9 @@ from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import path
 import openpyxl
+from django_summernote.admin import SummernoteModelAdmin, AttachmentAdmin
+from django_summernote.models import Attachment
+from django_summernote.utils import get_attachment_model
 from rangefilter.filter import DateRangeFilter
 
 from .forms import XLSXImportForm
@@ -20,10 +24,11 @@ class NutrientInline(admin.StackedInline):
     model = Nutrient
 
 
-class TableAdmin(admin.ModelAdmin):
+class TableAdmin(SummernoteModelAdmin):
     model = Table
     search_fields = ['date', 'dietary_composition']
     change_list_template = 'admin/tables/Table/change_list.html'
+    summernote_fields = ('recipe',)
     inlines = [NutrientInline]
     list_filter = (
         ('date', DateRangeFilter),

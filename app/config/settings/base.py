@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
+import datetime
 import json
 import os
+import random
+import string
+
 from celery.schedules import crontab
 
 
@@ -47,6 +51,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
 
+# Auth User Model(Default User Model settings)
 AUTH_USER_MODEL = 'members.User'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -73,6 +78,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
     'rangefilter',
+    'django_summernote',
     # 'django_crontab',
 ]
 
@@ -230,4 +236,28 @@ ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'localhost:9200'
     }
+}
+
+
+# SummerNote settings
+SUMMERNOTE_THEME = 'bs4'
+
+
+# SUMMERNOTE editor configuration
+def random_string():
+    rand_string = string.ascii_letters + string.digits
+    return ''.join(random.choice(rand_string) for i in range(8))
+
+
+def summernote_custom_upload_to():
+    return ".media/" + datetime.datetime.now().strftime("%Y-%m-%d") + f'/{random_string()}'
+
+
+SUMMERNOTE_CONFIG = {
+    'summernote': {
+        'lang': 'ko-KR',
+    },
+    'attachment_model': 'tables.TableAttachment',
+    'attachment_upload_to': summernote_custom_upload_to(),
+    'attachment_absolute_uri': True,
 }
