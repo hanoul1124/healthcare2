@@ -26,6 +26,7 @@ class NutrientSerializer(serializers.ModelSerializer):
 
 class TableSerializer(serializers.ModelSerializer):
     nutrient = NutrientSerializer()
+    recipe_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Table
@@ -34,9 +35,15 @@ class TableSerializer(serializers.ModelSerializer):
             'date',
             'time',
             'dietary_composition',
-            'recipe',
+            'recipe_url',
             'nutrient'
         )
+
+    def get_recipe_url(self, obj):
+        prefix = 'http://127.0.0.1:8000/api/tables/recipe'
+        table_pk = obj.pk
+        recipe = prefix + f'/{table_pk}/'
+        return recipe
 
 
 class TableCompactSerializer(serializers.ModelSerializer):

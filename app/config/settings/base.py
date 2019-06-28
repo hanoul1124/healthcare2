@@ -257,7 +257,7 @@ SUMMERNOTE_CONFIG = {
     'summernote': {
         'lang': 'ko-KR',
     },
+    'attachment_absolute_uri': True,
     'attachment_model': 'tables.TableAttachment',
     'attachment_upload_to': summernote_custom_upload_to(),
-    'attachment_absolute_uri': True,
 }
