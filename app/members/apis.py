@@ -84,8 +84,8 @@ class PhoneNumberVerificationView(APIView):
             send_url = f'https://api-sens.ncloud.com/v1/sms/services/{service_id}/messages'
             headers = {
                 "Content-Type": "application/json; charset=utf-8",
-                "X-NCP-auth-key": "Ewp30enbXCGCzuLlOz7o",
-                "X-NCP-service-secret": "566ef845c0514626b337427cab165cc8"
+                "X-NCP-auth-key": secrets['X-NCP-AUTH-KEY'],
+                "X-NCP-service-secret": secrets['X-NCP-SERVICE-SECRET']
             }
             body = {
                 "type": "SMS",

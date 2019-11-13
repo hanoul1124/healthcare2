@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from .models import *
 
@@ -41,6 +40,7 @@ class TableSerializer(serializers.ModelSerializer):
 
     def get_recipe_url(self, obj):
         prefix = 'http://127.0.0.1:8000/api/tables/recipe'
+        # prefix = 'https://hanoul.kr/api/tables/recipe'
         table_pk = obj.pk
         recipe = prefix + f'/{table_pk}/'
         return recipe
@@ -56,41 +56,6 @@ class TableCompactSerializer(serializers.ModelSerializer):
             'dietary_composition',
             'nutrient'
         )
-
-# class TableListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Table
-#         fields = (
-#             'pk',
-#             'date',
-#             'time'
-#             'dietary_composition',
-#         )
-#
-#
-# class TableCompactSerializer(serializers.ModelSerializer):
-#     nutrient = NutrientSerializer()
-#
-#     class Meta:
-#         model = Table
-#         fields = (
-#             'pk',
-#             'dietary_composition',
-#             'nutrient'
-#         )
-
-
-# class TodayTableSerializer(serializers.ModelSerializer):
-#     table = TableCompactSerializer()
-#
-#     class Meta:
-#         model = TodayTable
-#         fields = (
-#             'table',
-#             'date',
-#             'time'
-#         )
-#         read_only_fields = ('__all__',)
 
 
 class TableLogSerializer(serializers.ModelSerializer):
