@@ -23,6 +23,7 @@ from .serializers import UserSerializer, PhoneNumberVerificationSerializer, Chec
 
 User = get_user_model()
 
+
 class SignupView(generics.CreateAPIView):
     '''
     회원가입 API.

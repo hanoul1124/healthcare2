@@ -1,17 +1,17 @@
-import os
+# import os
 from datetime import date
 
-import django_summernote
-from django.conf import settings
+# import django_summernote
+# from django.conf import settings
 from django.contrib import admin
-from django.contrib.admin.sites import AdminSite
-from django.db.utils import IntegrityError
+# from django.contrib.admin.sites import AdminSite
+# from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import path
 import openpyxl
-from django_summernote.admin import SummernoteModelAdmin, AttachmentAdmin
-from django_summernote.models import Attachment
-from django_summernote.utils import get_attachment_model
+# from django_summernote.admin import SummernoteModelAdmin, AttachmentAdmin
+# from django_summernote.models import Attachment
+# from django_summernote.utils import get_attachment_model
 from rangefilter.filter import DateRangeFilter
 
 from .forms import XLSXImportForm
@@ -24,11 +24,12 @@ class NutrientInline(admin.StackedInline):
     model = Nutrient
 
 
-class TableAdmin(SummernoteModelAdmin):
+# class TableAdmin(SummernoteModelAdmin):
+class TableAdmin(admin.StackedInline):
     model = Table
     search_fields = ['date', 'dietary_composition']
     change_list_template = 'admin/tables/Table/change_list.html'
-    summernote_fields = ('recipe',)
+    # summernote_fields = ('recipe',)
     inlines = [NutrientInline]
     list_filter = (
         ('date', DateRangeFilter),
@@ -39,139 +40,57 @@ class TableAdmin(SummernoteModelAdmin):
     def import_xlsx(self, request):
         if request.method == "POST":
             file = request.FILES.get('xlsx_file')
-            date_input = date(
-                int(request.POST.get('date_input_year')),
-                int(request.POST.get('date_input_month')),
-                int(request.POST.get('date_input_day'))
-            )
+            initial_year = int(request.POST.get('date_input_year'))
+            initial_month = int(request.POST.get('date_input_month'))
+
             # reader = csv.reader(csv_file)
             xlsx_file = openpyxl.load_workbook(file)
-            worksheet = xlsx_file.active
-            meal_list = []
-            for i in range(1, worksheet.max_row + 1):
-                cell = worksheet.cell(i, 1)
-                if cell.value == '아침식사':
-                    breakfast = i
-                    meal_list.append(breakfast)
-                elif cell.value == '점심식사':
-                    launch = i
-                    meal_list.append(launch)
-                elif cell.value == '저녁식사':
-                    dinner = i
-                    meal_list.append(dinner)
-                elif cell.value == '오전간식':
-                    am_snack = i
-                    meal_list.append(am_snack)
-                elif cell.value == '오후간식':
-                    pm_snack = i
-                    meal_list.append(pm_snack)
-                elif cell.value == '1일전체':
-                    last = i
-                    meal_list.append(last)
+            nut_sheet = xlsx_file['Nutrition_Sheet']
+            des_sheet = xlsx_file['Description_Sheet']
+            entry_list = ['전체', '아침', '점심', '저녁', '간식']
 
-            breakfast_composition_list = [worksheet.cell(food, 2).value for food in range(breakfast, launch) if
-                                          worksheet.cell(food, 2).value is not None]
-            launch_composition_list = [worksheet.cell(food, 2).value for food in range(launch, dinner) if
-                                       worksheet.cell(food, 2).value is not None]
-            dinner_composition_list = [worksheet.cell(food, 2).value for food in range(dinner, am_snack) if
-                                       worksheet.cell(food, 2).value is not None]
-            am_snack_composition_list = [worksheet.cell(food, 2).value for food in range(am_snack, pm_snack) if
-                                         worksheet.cell(food, 2).value is not None]
-            pm_snack_composition_list = [worksheet.cell(food, 2).value for food in range(pm_snack, last) if
-                                         worksheet.cell(food, 2).value is not None]
+            all_meal_list = list(nut_sheet.iter_rows())
+            all_meal_des_list = list(des_sheet.iter_rows())
 
-            br_table, br_created = Table.objects.get_or_create(
-                dietary_composition=breakfast_composition_list,
-                date=date_input,
-                time='아침'
-            )
-            # TodayTable.objects.create(table=br_table, date=date_input, time='아침')
-            lc_table, lc_created = Table.objects.get_or_create(
-                dietary_composition=launch_composition_list,
-                date=date_input,
-                time='점심'
-            )
-            # TodayTable.objects.create(table=lc_table, date=date_input, time='점심')
-            dn_table, dn_created = Table.objects.get_or_create(
-                dietary_composition=dinner_composition_list,
-                date=date_input,
-                time='저녁'
-            )
-            # TodayTable.objects.create(table=dn_table, date=date_input, time='저녁')
-            as_table, as_created = Table.objects.get_or_create(
-                dietary_composition=am_snack_composition_list,
-                date=date_input,
-                time='간식(오전)'
-            )
-            # TodayTable.objects.create(table=as_table, date=date_input, time='간식(오전)')
-            ps_table, ps_created = Table.objects.get_or_create(
-                dietary_composition=pm_snack_composition_list,
-                date=date_input,
-                time='간식(오후)'
-            )
-            # TodayTable.objects.create(table=ps_table, date=date_input, time='간식(오후)')
+            bookmark = 1
+            for i in range((nut_sheet.max_row - 1)//5):
+                for mark, entry in enumerate(entry_list, start=bookmark):
+                    # Table Create
+                    if entry is not '전체':
+                        composition = all_meal_list[mark][2].value.split(',')
+                        table = Table.objects.get_or_create(
+                            dietary_composition=composition,
+                            ingredients=all_meal_des_list[mark-(i + 1)][3],
+                            recipe=all_meal_des_list[mark - (i + 1)][4],
+                            tips=all_meal_des_list[mark - (i + 1)][5],
+                            date=date(
+                                initial_year,
+                                initial_month,
+                                mark
+                            ),
+                            time=entry
+                        )
+                        # Table Nutrients Create
+                        nut = table.nutrient
+                        nut.calorie = all_meal_list[mark][3].value
+                        nut.carbs = all_meal_list[mark][4].value
+                        nut.fiber = all_meal_list[mark][5].value
+                        nut.V_protein = all_meal_list[mark][6].value
+                        nut.A_protein = all_meal_list[mark][7].value
+                        nut.V_fat = all_meal_list[mark][8].value
+                        nut.A_fat = all_meal_list[mark][9].value
+                        nut.cholesterol = all_meal_list[mark][10].value
+                        nut.salt = all_meal_list[mark][11].value
+                        nut.potassium = all_meal_list[mark][12].value
+                        nut.phosphorus = all_meal_list[mark][13].value
+                        nut.V_calcium = all_meal_list[mark][14].value
+                        nut.A_calcium = all_meal_list[mark][15].value
+                        nut.V_iron = all_meal_list[mark][16].value
+                        nut.A_iron = all_meal_list[mark][17].value
 
-            table_list = [br_table, lc_table,  dn_table, as_table, ps_table]
-
-            nut_list = []
-            for nut in range(4, worksheet.max_column + 1):
-                cell = worksheet.cell(1, nut)
-                if cell.value == '에너지(kcal)':
-                    calorie = nut
-                    nut_list.append(calorie)
-                elif cell.value == '탄수화물(g)':
-                    carbs = nut
-                    nut_list.append(carbs)
-                elif cell.value == '식물성 지질(g)':
-                    V_fat = nut
-                    nut_list.append(V_fat)
-                elif cell.value == '동물성 지질(g)':
-                    A_fat = nut
-                    nut_list.append(A_fat)
-                elif cell.value == '식물성 단백질(g)':
-                    V_protein = nut
-                    nut_list.append(V_protein)
-                elif cell.value == '동물성 단백질(g)':
-                    A_protein = nut
-                    nut_list.append(A_protein)
-                elif cell.value == '식이섬유(g)':
-                    fiber = nut
-                    nut_list.append(fiber)
-                elif cell.value == '식물성 칼슘(mg)':
-                    V_calcium = nut
-                    nut_list.append(V_calcium)
-                elif cell.value == '동물성 칼슘(mg)':
-                    A_calcium = nut
-                    nut_list.append(A_calcium)
-                elif cell.value == '인(mg)':
-                    phosphorus = nut
-                    nut_list.append(phosphorus)
-                elif cell.value == '나트륨(mg)':
-                    salt = nut
-                    nut_list.append(salt)
-                elif cell.value == '칼륨(mg)':
-                    potassium = nut
-                    nut_list.append(potassium)
-                elif cell.value == '콜레스테롤(mg)':
-                    cholesterol = nut
-                    nut_list.append(cholesterol)
-
-            for index, table in enumerate(table_list):
-                nutrient = table.nutrient
-                nutrient.calorie = worksheet.cell(meal_list[index+1]-1, nut_list[0]).value
-                nutrient.carbs = worksheet.cell(meal_list[index+1]-1, nut_list[1]).value
-                nutrient.fiber = worksheet.cell(meal_list[index+1]-1, nut_list[2]).value
-                nutrient.A_protein = worksheet.cell(meal_list[index+1]-1, nut_list[3]).value
-                nutrient.V_protein = worksheet.cell(meal_list[index+1]-1, nut_list[4]).value
-                nutrient.A_fat = worksheet.cell(meal_list[index+1]-1, nut_list[5]).value
-                nutrient.V_fat = worksheet.cell(meal_list[index+1]-1, nut_list[6]).value
-                nutrient.cholesterol = worksheet.cell(meal_list[index+1]-1, nut_list[7]).value
-                nutrient.salt = worksheet.cell(meal_list[index+1]-1, nut_list[8]).value
-                nutrient.potassium = worksheet.cell(meal_list[index+1]-1, nut_list[9]).value
-                nutrient.phosphorus = worksheet.cell(meal_list[index+1]-1, nut_list[10]).value
-                nutrient.A_calcium = worksheet.cell(meal_list[index+1]-1, nut_list[11]).value
-                nutrient.V_calcium = worksheet.cell(meal_list[index+1]-1, nut_list[12]).value
-                nutrient.save()
+                        table.save()
+                        nut.save()
+                    bookmark += 1
             return redirect("..")
         # XLSX file 제출용 HTML 페이지로 연결
         # 여기서 XLSX 파일을 업로드하면
@@ -188,10 +107,9 @@ class TableAdmin(SummernoteModelAdmin):
         return new_urls
 
 
-    # Admin 사이트의 모든 URL을 가져오는 함수
-    # 여기에 새롭게 추가할 기능의 url을 연결할 수 있게
-    # path들로 이루어진 urls 리스트에 my_url을 추가한다.
-
+# Admin 사이트의 모든 URL을 가져오는 함수
+# 여기에 새롭게 추가할 기능의 url을 연결할 수 있게
+# path들로 이루어진 urls 리스트에 my_url을 추가한다.
 # class CustomAdminSite(admin.AdminSite):
 #     def get_urls(self):
 #         urls = super(CustomAdminSite, self).get_urls()
@@ -213,5 +131,4 @@ class TableLogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Table, TableAdmin)
-# admin.site.register(TodayTable)
 admin.site.register(TableLog, TableLogAdmin)

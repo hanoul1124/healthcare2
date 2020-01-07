@@ -23,15 +23,13 @@ class Table(models.Model):
         unique_together = ('date', 'time',)
 
     def __str__(self):
-        # return f'{self.pk}번 식단: {self.dietary_composition}'
         return f'{self.date} {self.time}의 식단'
 
     TABLE_TIME_CHOICES = (
         ('아침', 'Breakfast'),
         ('점심', 'Launch'),
         ('저녁', 'Dinner'),
-        ('간식(오전)', 'Snack(AM)'),
-        ('간식(오후)', 'Snack(PM)'),
+        ('간식', 'Snack'),
     )
 
     dietary_composition = ArrayField(
@@ -40,8 +38,12 @@ class Table(models.Model):
         # ,unique=True
     )
 
-    recipe = models.TextField(blank=True, null=True, verbose_name='레시피', default="레시피")
-    # nutrients = JSONField(blank=True, null=True)
+    # 필요한 재료량
+    ingredients = models.TextField(blank=True, null=True, verbose_name='재료', default=" ")
+    # 레시피
+    recipe = models.TextField(blank=True, null=True, verbose_name='레시피', default=" ")
+    # 레시피 팁
+    tips = models.TextField(blank=True, null=True, verbose_name='레시피 팁', default=" ")
 
     date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
     time = models.CharField(
@@ -74,16 +76,18 @@ class Nutrient(models.Model):
     calorie = models.FloatField(blank=True, null=True, default=0, verbose_name='칼로리')
     carbs = models.FloatField(blank=True, null=True, default=0, verbose_name='탄수화물')
     fiber = models.FloatField(blank=True, null=True, default=0, verbose_name='섬유질')
-    A_protein = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 단백질')
     V_protein = models.FloatField(blank=True, null=True, default=0, verbose_name='식물성 단백질')
-    A_fat = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 지방')
+    A_protein = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 단백질')
     V_fat = models.FloatField(blank=True, null=True, default=0, verbose_name='식물성 지방')
+    A_fat = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 지방')
     cholesterol = models.FloatField(blank=True, null=True, default=0, verbose_name='콜레스테롤')
     salt = models.FloatField(blank=True, null=True, default=0, verbose_name='나트륨')
     potassium = models.FloatField(blank=True, null=True, default=0, verbose_name='칼륨')
     phosphorus = models.FloatField(blank=True, null=True, default=0, verbose_name='인')
-    A_calcium = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 칼슘')
     V_calcium = models.FloatField(blank=True, null=True, default=0, verbose_name='식물성 칼슘')
+    A_calcium = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 칼슘')
+    V_iron = models.FloatField(blank=True, null=True, default=0, verbose_name='식물성 철')
+    A_iron = models.FloatField(blank=True, null=True, default=0, verbose_name='동물성 철')
 
     @receiver(post_save, sender=Table)
     def create_table_nutrient(sender, instance, created, **kwargs):
@@ -93,33 +97,6 @@ class Nutrient(models.Model):
     @receiver(post_save, sender=Table)
     def save_table_nutrient(sender, instance, **kwargs):
         instance.nutrient.save()
-
-
-# class TodayTable(models.Model):
-#     class Meta:
-#         verbose_name = '오늘의 식단'
-#         verbose_name_plural = f'{verbose_name} 목록'
-#
-#     def __str__(self):
-#         return f'{self.date} {self.time}의 식단'
-#
-#     TABLE_TIME_CHOICES = (
-#         ('아침', 'Breakfast'),
-#         ('점심', 'Launch'),
-#         ('저녁', 'Dinner'),
-#         ('간식(오전)', 'Snack(AM)'),
-#         ('간식(오후)', 'Snack(PM)'),
-#     )
-#     table = models.ForeignKey(Table, blank=True, on_delete=models.CASCADE, verbose_name='식단')
-#     date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
-#     time = models.CharField(
-#         max_length=8,
-#         choices=TABLE_TIME_CHOICES,
-#         blank=True,
-#         null=True,
-#         default='아침',
-#         verbose_name='섭취 시간'
-#     )
 
 
 # unique_together > date & time
@@ -137,8 +114,7 @@ class TableLog(models.Model):
         ('아침', 'Breakfast'),
         ('점심', 'Launch'),
         ('저녁', 'Dinner'),
-        ('간식(오전)', 'Snack(AM)'),
-        ('간식(오후)', 'Snack(PM)'),
+        ('간식', 'Snack'),
     )
     user = models.ForeignKey(User, db_index=True, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
     table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단', on_delete=models.CASCADE)
@@ -154,13 +130,12 @@ class TableLog(models.Model):
 
 
 # SummerNote Editor Attachment Model
-
-class TableAttachment(AbstractAttachment):
-    file = models.FileField(
-        upload_to=get_attachment_upload_to(),
-        storage=get_attachment_storage()
-    )
-
-    class Meta:
-        verbose_name = '레시피 첨부파일'
-        verbose_name_plural = f'{verbose_name} 목록'
+# class TableAttachment(AbstractAttachment):
+#     file = models.FileField(
+#         upload_to=get_attachment_upload_to(),
+#         storage=get_attachment_storage()
+#     )
+#
+#     class Meta:
+#         verbose_name = '레시피 첨부파일'
+#         verbose_name_plural = f'{verbose_name} 목록'

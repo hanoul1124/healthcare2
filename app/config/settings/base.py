@@ -14,7 +14,7 @@ import json
 import os
 import random
 import string
-
+from django.utils.translation import ugettext_lazy as _
 from celery.schedules import crontab
 
 
@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
     'rangefilter',
-    'django_summernote',
+    # 'django_summernote',
 ]
 
 REST_FRAMEWORK = {
@@ -154,7 +154,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'ko-kr'
+LANGUAGES = [
+    ('ko-KR', _('Korean')),
+    ('en-us', _('English')),
+]
+
+LANGUAGE_CODE = 'ko-KR'
 
 TIME_ZONE = 'Asia/Seoul'
 
@@ -166,8 +171,8 @@ USE_TZ = True
 
 
 # Celery Settings
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = secrets['CELERY_URL']
+CELERY_RESULT_BACKEND = secrets['CELERY_RESULT_BACKEND']
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {
     'user-default-log-per-month': {
@@ -193,24 +198,24 @@ ELASTICSEARCH_DSL = {
 
 
 # SummerNote settings
-SUMMERNOTE_THEME = 'bs4'
+# SUMMERNOTE_THEME = 'bs4'
 
 
 # SUMMERNOTE editor configuration
-def random_string():
-    rand_string = string.ascii_letters + string.digits
-    return ''.join(random.choice(rand_string) for i in range(8))
-
-
-def summernote_custom_upload_to():
-    return ".media/" + datetime.datetime.now().strftime("%Y-%m-%d") + f'/{random_string()}'
-
-
-SUMMERNOTE_CONFIG = {
-    'summernote': {
-        'lang': 'ko-KR',
-    },
-    'attachment_absolute_uri': True,
-    'attachment_model': 'tables.TableAttachment',
-    'attachment_upload_to': summernote_custom_upload_to(),
-}
+# def random_string():
+#     rand_string = string.ascii_letters + string.digits
+#     return ''.join(random.choice(rand_string) for i in range(8))
+#
+#
+# def summernote_custom_upload_to():
+#     return ".media/" + datetime.datetime.now().strftime("%Y-%m-%d") + f'/{random_string()}'
+#
+#
+# SUMMERNOTE_CONFIG = {
+#     'summernote': {
+#         'lang': 'ko-KR',
+#     },
+#     'attachment_absolute_uri': True,
+#     'attachment_model': 'tables.TableAttachment',
+#     'attachment_upload_to': summernote_custom_upload_to(),
+# }

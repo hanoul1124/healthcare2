@@ -20,12 +20,14 @@ class NutrientSerializer(serializers.ModelSerializer):
             'phosphorus',
             'A_calcium',
             'V_calcium',
+            'V_iron',
+            'A_iron'
         )
 
 
 class TableSerializer(serializers.ModelSerializer):
     nutrient = NutrientSerializer()
-    recipe_url = serializers.SerializerMethodField()
+    # recipe_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Table
@@ -34,16 +36,19 @@ class TableSerializer(serializers.ModelSerializer):
             'date',
             'time',
             'dietary_composition',
-            'recipe_url',
+            # 'recipe_url',
+            'ingredients',
+            'recipe',
+            'tips',
             'nutrient'
         )
 
-    def get_recipe_url(self, obj):
-        prefix = 'http://127.0.0.1:8000/api/tables/recipe'
-        # prefix = 'https://hanoul.kr/api/tables/recipe'
-        table_pk = obj.pk
-        recipe = prefix + f'/{table_pk}/'
-        return recipe
+    # def get_recipe_url(self, obj):
+    #     prefix = 'http://127.0.0.1:8000/api/tables/recipe'
+    #     # prefix = 'https://hanoul.kr/api/tables/recipe'
+    #     table_pk = obj.pk
+    #     recipe = prefix + f'/{table_pk}/'
+    #     return recipe
 
 
 class TableCompactSerializer(serializers.ModelSerializer):
@@ -78,7 +83,7 @@ class MakeTableLogSerializer(serializers.Serializer):
     def validate(self, attrs):
         table_pk = attrs.get('table_pk')
         meal_time = attrs.get('meal_time')
-        available_meal_time = ['아침', '점심', '저녁', '간식(오전)', '간식(오후)']
+        available_meal_time = ['아침', '점심', '저녁', '간식']
         try:
             if Table.objects.get(pk=table_pk) and meal_time in available_meal_time:
                 return attrs
