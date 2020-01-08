@@ -6,8 +6,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
-from django_summernote.models import AbstractAttachment
-from django_summernote.utils import get_attachment_upload_to, get_attachment_storage
+# from django_summernote.models import AbstractAttachment
+# from django_summernote.utils import get_attachment_upload_to, get_attachment_storage
 
 User = get_user_model()
 

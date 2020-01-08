@@ -1,11 +1,11 @@
-# import os
+import os
 from datetime import date
 
 # import django_summernote
-# from django.conf import settings
+from django.conf import settings
 from django.contrib import admin
-# from django.contrib.admin.sites import AdminSite
-# from django.db.utils import IntegrityError
+from django.contrib.admin.sites import AdminSite
+from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import path
 import openpyxl
@@ -25,7 +25,7 @@ class NutrientInline(admin.StackedInline):
 
 
 # class TableAdmin(SummernoteModelAdmin):
-class TableAdmin(admin.StackedInline):
+class TableAdmin(admin.ModelAdmin):
     model = Table
     search_fields = ['date', 'dietary_composition']
     change_list_template = 'admin/tables/Table/change_list.html'

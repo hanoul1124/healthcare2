@@ -9,11 +9,11 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-import datetime
+# import datetime
 import json
 import os
-import random
-import string
+# import random
+# import string
 from django.utils.translation import ugettext_lazy as _
 from celery.schedules import crontab
 
@@ -72,9 +72,10 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
+    # 'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl_drf',
     'rangefilter',
+    'watson',
     # 'django_summernote',
 ]
 
@@ -190,11 +191,11 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 # ElasticSearch_DSL
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    }
-}
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': 'localhost:9200'
+#     }
+# }
 
 
 # SummerNote settings

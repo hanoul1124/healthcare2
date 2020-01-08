@@ -1,11 +1,10 @@
-from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from .models import *
+from rest_framework import serializers
 
-from .documents import *
 
-
-class FNIDocumentSerializer(DocumentSerializer):
+class FNISerializer(serializers.ModelSerializer):
     class Meta:
-        document = FNIDocument
+        model = FNI
         fields = (
             'id',
             'food_name',
@@ -23,9 +22,9 @@ class FNIDocumentSerializer(DocumentSerializer):
         )
 
 
-class HFIDocumentSerializer(DocumentSerializer):
+class HFISerializer(serializers.ModelSerializer):
     class Meta:
-        document = HFIDocument
+        model = HFI
         fields = (
             'id',
             'material_name',
@@ -36,9 +35,9 @@ class HFIDocumentSerializer(DocumentSerializer):
         )
 
 
-class HFCDocumentSerializer(DocumentSerializer):
+class HFCSerializer(serializers.ModelSerializer):
     class Meta:
-        document = HFCDocument
+        model = HFC
         fields = (
             'id',
             'material_name',
@@ -49,9 +48,9 @@ class HFCDocumentSerializer(DocumentSerializer):
         )
 
 
-class HFADocumentSerializer(DocumentSerializer):
+class HFASerializer(serializers.ModelSerializer):
     class Meta:
-        document = HFADocument
+        model = HFA
         fields = (
             'id',
             'material_name',
