@@ -1,17 +1,8 @@
-import os
 from datetime import date
-
-# import django_summernote
-from django.conf import settings
 from django.contrib import admin
-from django.contrib.admin.sites import AdminSite
-from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import path
 import openpyxl
-# from django_summernote.admin import SummernoteModelAdmin, AttachmentAdmin
-# from django_summernote.models import Attachment
-# from django_summernote.utils import get_attachment_model
 from rangefilter.filter import DateRangeFilter
 
 from .forms import XLSXImportForm
@@ -24,7 +15,6 @@ class NutrientInline(admin.StackedInline):
     model = Nutrient
 
 
-# class TableAdmin(SummernoteModelAdmin):
 class TableAdmin(admin.ModelAdmin):
     model = Table
     search_fields = ['date', 'dietary_composition']
@@ -66,7 +56,7 @@ class TableAdmin(admin.ModelAdmin):
                             date=date(
                                 initial_year,
                                 initial_month,
-                                mark
+                                i+1
                             ),
                             time=entry
                         )
@@ -106,17 +96,6 @@ class TableAdmin(admin.ModelAdmin):
         ] + urls
         return new_urls
 
-
-# Admin 사이트의 모든 URL을 가져오는 함수
-# 여기에 새롭게 추가할 기능의 url을 연결할 수 있게
-# path들로 이루어진 urls 리스트에 my_url을 추가한다.
-# class CustomAdminSite(admin.AdminSite):
-#     def get_urls(self):
-#         urls = super(CustomAdminSite, self).get_urls()
-#         new_urls = [
-#             path('import-xlsx/', TableAdmin.import_xlsx),
-#         ]
-#         return urls + new_urls
 
 class TableLogAdmin(admin.ModelAdmin):
     model = TableLog

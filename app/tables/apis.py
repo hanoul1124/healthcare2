@@ -13,16 +13,6 @@ from .models import *
 User = get_user_model()
 
 
-# 레시피 HTML rendering View
-# class RecipeEditorAPIView(APIView):
-#     renderer_classes = [TemplateHTMLRenderer]
-#     template_name = 'editor.html'
-#
-#     def get(self, request, pk):
-#         table = Table.objects.get(pk=pk)
-#         return Response({"table_code": table.recipe})
-
-
 # 한상 식단 리스트 View
 class TableListAPI(generics.ListAPIView):
     serializer_class = TableSerializer

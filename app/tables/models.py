@@ -6,8 +6,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
-# from django_summernote.models import AbstractAttachment
-# from django_summernote.utils import get_attachment_upload_to, get_attachment_storage
 
 User = get_user_model()
 
@@ -127,15 +125,3 @@ class TableLog(models.Model):
         default='아침',
         verbose_name='섭취 시간'
     )
-
-
-# SummerNote Editor Attachment Model
-# class TableAttachment(AbstractAttachment):
-#     file = models.FileField(
-#         upload_to=get_attachment_upload_to(),
-#         storage=get_attachment_storage()
-#     )
-#
-#     class Meta:
-#         verbose_name = '레시피 첨부파일'
-#         verbose_name_plural = f'{verbose_name} 목록'

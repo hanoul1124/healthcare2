@@ -72,11 +72,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'django_elasticsearch_dsl',
-    # 'django_elasticsearch_dsl_drf',
     'rangefilter',
     'watson',
-    # 'django_summernote',
 ]
 
 REST_FRAMEWORK = {
@@ -189,34 +186,3 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(month_of_year="1", day_of_month="1", hour=0, minute=0)
     },
 }
-
-# ElasticSearch_DSL
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': 'localhost:9200'
-#     }
-# }
-
-
-# SummerNote settings
-# SUMMERNOTE_THEME = 'bs4'
-
-
-# SUMMERNOTE editor configuration
-# def random_string():
-#     rand_string = string.ascii_letters + string.digits
-#     return ''.join(random.choice(rand_string) for i in range(8))
-#
-#
-# def summernote_custom_upload_to():
-#     return ".media/" + datetime.datetime.now().strftime("%Y-%m-%d") + f'/{random_string()}'
-#
-#
-# SUMMERNOTE_CONFIG = {
-#     'summernote': {
-#         'lang': 'ko-KR',
-#     },
-#     'attachment_absolute_uri': True,
-#     'attachment_model': 'tables.TableAttachment',
-#     'attachment_upload_to': summernote_custom_upload_to(),
-# }

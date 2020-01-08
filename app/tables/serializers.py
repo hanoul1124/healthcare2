@@ -36,19 +36,11 @@ class TableSerializer(serializers.ModelSerializer):
             'date',
             'time',
             'dietary_composition',
-            # 'recipe_url',
             'ingredients',
             'recipe',
             'tips',
             'nutrient'
         )
-
-    # def get_recipe_url(self, obj):
-    #     prefix = 'http://127.0.0.1:8000/api/tables/recipe'
-    #     # prefix = 'https://hanoul.kr/api/tables/recipe'
-    #     table_pk = obj.pk
-    #     recipe = prefix + f'/{table_pk}/'
-    #     return recipe
 
 
 class TableCompactSerializer(serializers.ModelSerializer):
