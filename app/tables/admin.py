@@ -42,17 +42,25 @@ class TableAdmin(admin.ModelAdmin):
             all_meal_list = list(nut_sheet.iter_rows())
             all_meal_des_list = list(des_sheet.iter_rows())
 
+            # find non blank last row of the nut_sheet
+            last_row = 0
+            for cell in list(nut_sheet.columns)[0]:
+                if cell.value is None:
+                    last_row = cell.row
+                    break
+
             bookmark = 1
-            for i in range((nut_sheet.max_row - 1)//5):
+            for i in range((last_row - 1)//5):
                 for mark, entry in enumerate(entry_list, start=bookmark):
                     # Table Create
+                    des_index = mark - (i + 1)
                     if entry is not '전체':
-                        composition = all_meal_list[mark][2].value.split(',')
-                        table = Table.objects.get_or_create(
+                        composition = all_meal_des_list[des_index][3].value.split(',')
+                        table, nop = Table.objects.get_or_create(
                             dietary_composition=composition,
-                            ingredients=all_meal_des_list[mark-(i + 1)][3],
-                            recipe=all_meal_des_list[mark - (i + 1)][4],
-                            tips=all_meal_des_list[mark - (i + 1)][5],
+                            ingredients=all_meal_des_list[des_index][4].value,
+                            recipe=all_meal_des_list[des_index][5].value,
+                            tips=all_meal_des_list[des_index][6].value,
                             date=date(
                                 initial_year,
                                 initial_month,
@@ -81,6 +89,7 @@ class TableAdmin(admin.ModelAdmin):
                         table.save()
                         nut.save()
                     bookmark += 1
+
             return redirect("..")
         # XLSX file 제출용 HTML 페이지로 연결
         # 여기서 XLSX 파일을 업로드하면
