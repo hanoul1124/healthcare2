@@ -30,7 +30,6 @@ urlpatterns_api = ([
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('summernote/', include('django_summernote.urls')),
     path('', views.index, name='index'),
     path('api/', include(urlpatterns_api)),
 ]
