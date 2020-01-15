@@ -35,7 +35,7 @@ class TableAdmin(admin.ModelAdmin):
             xlsx_file = openpyxl.load_workbook(file)
             nut_sheet = xlsx_file['Nutrition_Sheet']
             des_sheet = xlsx_file['Description_Sheet']
-            entry_list = ['전체', '아침', '점심', '저녁', '간식']
+            entry_list = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snack']
 
             all_meal_list = list(nut_sheet.iter_rows())
             all_meal_des_list = list(des_sheet.iter_rows())
@@ -55,7 +55,7 @@ class TableAdmin(admin.ModelAdmin):
             for i in range((num_rows - 1)//5):
                 for mark, entry in enumerate(entry_list, start=bookmark):
                     # Table Create
-                    if entry is not '전체':
+                    if entry is not 'All':
                         try:
                             meal_content = all_meal_des_list[mark - (i + 1)][3].value
                             if ',' in meal_content:

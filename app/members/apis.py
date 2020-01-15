@@ -6,7 +6,8 @@
 import json
 import os
 import random
-
+import datetime
+import calendar
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, status
@@ -18,6 +19,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 import requests
 
+from tables.models import TableLog
 from .serializers import UserSerializer, PhoneNumberVerificationSerializer, CheckUniqueIDSerializer, \
     SocialAuthTokenSerializer, UserInfoSerializer
 
@@ -41,6 +43,14 @@ class SignupView(generics.CreateAPIView):
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
+
+        date_range = [
+            datetime.date.today().replace(day=1) + datetime.timedelta(i)
+            for i in range(0, calendar.monthrange(datetime.date.today().year, datetime.date.today().month)[1])
+        ]
+        for date in date_range:
+            for time in ['Breakfast', 'Lunch', 'Dinner', 'Snack']:
+                TableLog.objects.get_or_create(user=User.objects.get(pk=instance.pk), date=date, time=time)
 
 
 class CheckUniqueIDView(APIView):

@@ -24,10 +24,10 @@ class Table(models.Model):
         return f'{self.date} {self.time}의 식단'
 
     TABLE_TIME_CHOICES = (
-        ('아침', 'Breakfast'),
-        ('점심', 'Launch'),
-        ('저녁', 'Dinner'),
-        ('간식', 'Snack'),
+        ('Breakfast', 'Breakfast'),
+        ('Lunch', 'Lunch'),
+        ('Dinner', 'Dinner'),
+        ('Snack', 'Snack'),
     )
 
     dietary_composition = ArrayField(
@@ -45,11 +45,11 @@ class Table(models.Model):
 
     date = models.DateField(db_index=True, blank=True, null=True, verbose_name='날짜')
     time = models.CharField(
-        max_length=8,
+        max_length=16,
         choices=TABLE_TIME_CHOICES,
         blank=True,
         null=True,
-        default='아침',
+        default='Breakfast',
         verbose_name='섭취 시간'
     )
     
@@ -109,19 +109,19 @@ class TableLog(models.Model):
         return f'{self.pk}번 식단'
 
     TABLE_TIME_CHOICES = (
-        ('아침', 'Breakfast'),
-        ('점심', 'Launch'),
-        ('저녁', 'Dinner'),
-        ('간식', 'Snack'),
+        ('Breakfast', 'Breakfast'),
+        ('Lunch', 'Lunch'),
+        ('Dinner', 'Dinner'),
+        ('Snack', 'Snack'),
     )
     user = models.ForeignKey(User, db_index=True, blank=True, null=True, verbose_name='유저', on_delete=models.CASCADE)
     table = models.ForeignKey(Table, blank=True, null=True, verbose_name='섭취 식단', on_delete=models.CASCADE)
     date = models.DateField(blank=True, db_index=True, null=True, default=timezone.now, verbose_name='섭취 일자')
     time = models.CharField(
-        max_length=8,
+        max_length=16,
         choices=TABLE_TIME_CHOICES,
         blank=True,
         null=True,
-        default='아침',
+        default='Breakfast',
         verbose_name='섭취 시간'
     )

@@ -7,11 +7,6 @@ from config.celery import app
 
 # for celery test
 @app.task
-def add(x, y):
-    return x + y
-
-
-@app.task
 def table_renewal():
     cache.delete('table_list')
     cache.delete('today_table')
@@ -29,7 +24,7 @@ def make_default_log_daily(user_pk):
         for i in range(0, calendar.monthrange(datetime.date.today().year, datetime.date.today().month)[1])
     ]
     for date in date_range:
-        for time in ['아침', '점심', '저녁', '간식']:
+        for time in ['Breakfast', 'Lunch', 'Dinner', 'Snack']:
             TableLog.objects.get_or_create(user=User.objects.get(pk=user_pk), date=date, time=time)
 
 

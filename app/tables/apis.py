@@ -90,8 +90,8 @@ class MakeTableLogAPI(APIView):
     def post(self, request):
         serializer = MakeTableLogSerializer(data=request.data)
         if serializer.is_valid():
-            given_pk = serializer.validated_data["table_pk"]
-            given_meal_time = serializer.validated_data["meal_time"]
+            given_pk = serializer.data["table_pk"]
+            given_meal_time = serializer.data["meal_time"]
             try:
                 table_log = TableLog.objects.get(
                     user=request.user,

@@ -75,7 +75,7 @@ class MakeTableLogSerializer(serializers.Serializer):
     def validate(self, attrs):
         table_pk = attrs.get('table_pk')
         meal_time = attrs.get('meal_time')
-        available_meal_time = ['아침', '점심', '저녁', '간식']
+        available_meal_time = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
         try:
             if Table.objects.get(pk=table_pk) and meal_time in available_meal_time:
                 return attrs
