@@ -4,19 +4,15 @@ from django.contrib import admin
 from .models import *
 
 
-class ProfileInline(admin.StackedInline):
-    model = Profile
-
-
 class UserAdmin(admin.ModelAdmin):
     model = User
     change_list_template = 'admin/members/User/change_list.html'
     fields = [
         'username', 'password', 'name', 'phone_number', 'email',
+        'gender', 'height', 'weight', 'renal_disease', 'hospital', 'attending_physician',
         'date_joined', 'last_login', 'is_active', 'is_superuser', 'is_staff'
     ]
     list_display = ['username']
-    inlines = [ProfileInline]
     search_fields = ['username', 'name', 'email', 'phone_number']
 
     def save_model(self, request, obj, form, change):

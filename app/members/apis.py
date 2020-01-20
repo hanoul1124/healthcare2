@@ -21,7 +21,7 @@ import requests
 
 from tables.models import TableLog
 from .serializers import UserSerializer, PhoneNumberVerificationSerializer, CheckUniqueIDSerializer, \
-    SocialAuthTokenSerializer, UserInfoSerializer
+    SocialAuthTokenSerializer
 
 User = get_user_model()
 
@@ -29,12 +29,12 @@ User = get_user_model()
 class SignupView(generics.CreateAPIView):
     '''
     회원가입 API.
-    아래 4개 항목을 입력해 전달하면, 타입 유효성 검사 후 가입 처리
+    아래 4개 필수 항목을 입력해 전달하면, 타입 유효성 검사 후 가입 처리
         'username',
         'password',
         'name',
-        'phone_number'"user
-    이외의 데이터는 추가 정보 기입(마이페이지)에 생성.
+        'phone_number'
+    나머지는 기입하지 않더라도 디폴트값 혹은 Null값 입력
     '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -161,23 +161,22 @@ class LogoutView(APIView):
         return Response({"logout": True}, status=status.HTTP_200_OK)
 
 
-# @transaction.atomic
-class UserInfoView(APIView):
+class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def get(self, request):
-        # token key부터 받고 key로 유저 인식시키기.
-        # user_profile = get_object_or_404(Profile, user=request.user)
-        serializer = UserInfoSerializer(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # members/profile/로 받기 때문에, pk가 추가 인자로 들어오지 않는다.
+    # 따라서 lookup_urlkwarg / lookup_field > 기본값 "pk"가 주어지지 않은 경우
+    # request.user를 선택하여 리턴하도록 한다.
+    def get_object(self):
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        if lookup_url_kwarg not in self.kwargs:
+            return self.request.user
 
-    def patch(self, request):
-        serializer = UserInfoSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.update(request.user, serializer.validated_data)
-            return Response({"message": "수정되었습니다."}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
+    # method for creating password hashing relation
+    def perform_update(self, serializer):
+        super(UserProfileView, self).perform_update(serializer)
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()

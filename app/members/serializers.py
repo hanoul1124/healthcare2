@@ -4,7 +4,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Profile
 User = get_user_model()
 
 
@@ -17,75 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
             'name',
             'email',
             'phone_number',
-        )
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = (
-            # 'user',
             'gender',
             'height',
             'weight',
             'renal_disease',
-            # 'email',
             'hospital',
             'attending_physician',
         )
-        # read_only_fields = ('user',)
-
-
-class UserInfoSerializer(serializers.ModelSerializer):
-    # profile = serializers.SerializerMethodField()
-    profile = ProfileSerializer()
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'password',
-            'name',
-            'email',
-            'phone_number',
-            'profile',
-        )
-        read_only_fields = ('username',)
-
-    # def get_profile(self, user):
-    #     profile_serializer = ProfileSerializer(user.profile)
-    #     return profile_serializer.data
-
-    # Nested writable serializer(ex profile = ProfileSerializer() > serializer.save())
-    # 이를 사용하기 위해서는, Serializer에 .create(), .update()를 explicit하게 작성하거나,
-    # ProfileSerializer(read_only=True)를 사용해야만 한다.
-    def create(self, validated_data):
-        # 일단 프로필을 먼저 빼둔다
-        profile = validated_data.pop('profile')
-        # 프로필을 뺐기 때문에 user 객체 정보만 남는다
-        user = User.objects.create_user(**validated_data)
-        Profile.objects.create(user=user, **profile)
-        return user
-
-    def update(self, user, validated_data):
-        profile_data = validated_data.pop('profile')
-        profile_instance = user.profile
-        profile_attr_list = [key for key in profile_data.__dict__.keys()]
-        for key in profile_attr_list:
-            setattr(profile_instance, key, profile_data.get(key))
-            # profile_instance.height = profile_data.get('height')
-            # profile_instance.weight = profile_data.get('weight')
-            # profile_instance.renal_disease = profile_data.get('renal_disease')
-            # profile_instance.hospital = profile_data.get('renal_disease')
-            # profile_instance.attending_physician = profile_data.get('attending_physician')
-        profile_instance.save()
-        if validated_data.get('password') != "passwordnochange":
-            user.set_password(validated_data.get('password'))
-        user.name = validated_data.get('name')
-        user.phone_number = validated_data.get('phone_number')
-        user.email = validated_data.get('email')
-        user.save()
-
-        return user
 
 
 class CheckUniqueIDSerializer(serializers.Serializer):
