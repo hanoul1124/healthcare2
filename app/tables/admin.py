@@ -62,11 +62,8 @@ class TableAdmin(admin.ModelAdmin):
                                 composition = meal_content.split(',')
                             else:
                                 composition = [meal_content]
+
                             table, nop = Table.objects.get_or_create(
-                                dietary_composition=composition,
-                                ingredients=all_meal_des_list[mark - (i + 1)][4].value,
-                                recipe=all_meal_des_list[mark - (i + 1)][5].value,
-                                tips=all_meal_des_list[mark - (i + 1)][6].value,
                                 date=date(
                                     initial_year,
                                     initial_month,
@@ -74,6 +71,12 @@ class TableAdmin(admin.ModelAdmin):
                                 ),
                                 time=entry
                             )
+                            table.dietary_composition = composition
+                            table.ingredients = all_meal_des_list[mark - (i + 1)][4].value
+                            table.recipe = all_meal_des_list[mark - (i + 1)][5].value
+                            table.tips = all_meal_des_list[mark - (i + 1)][6].value
+                            table.save()
+
                             # Table Nutrients Create
                             nut = table.nutrient
                             nut.calorie = all_meal_list[mark][3].value
