@@ -15,7 +15,3 @@
 
 ## API 문서
 https://speckled-iron-727.notion.site/Healthcare-Server-API-Documentation-V3-01-0b344234b2284a669e99d91e6274f423
-
-
-### TODO
-- 프로젝트 리뉴얼(버전 업그레이드 및 리팩토링 진행. 2022.6~7월 중 실시 예정)
